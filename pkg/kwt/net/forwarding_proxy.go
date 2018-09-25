@@ -70,6 +70,12 @@ func (o *ForwardingProxy) Serve(dstConnFactory dstconn.Factory, subnets []net.IP
 			return
 		}
 
+		err = actualForwarder.CheckPrereqs()
+		if err != nil {
+			forwarderErrCh <- err
+			return
+		}
+
 		forwarder.SetForwarder(actualForwarder)
 
 		o.logger.Info(o.logTag, "Forwarding subnets: %s", SubnetsAsString(subnets))

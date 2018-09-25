@@ -46,6 +46,15 @@ func NewIptables(opts IptablesOpts, exec CmdExecutor, logger Logger) Iptables {
 	return Iptables{opts, chains, exec, "Iptables", logger}
 }
 
+func (i Iptables) CheckPrereqs() error {
+	out, err := i.runCmd([]string{"-L", "-t", "nat"})
+	if err != nil {
+		return fmt.Errorf("Checking 'iptables' can run successfully: %s (output: %s)", err, out)
+	}
+
+	return nil
+}
+
 func (i Iptables) Add(subnets []net.IPNet, dnsIPs []net.IP) error {
 	cmds := [][]string{}
 
@@ -99,10 +108,14 @@ func (i Iptables) Reset() error {
 
 func (i Iptables) runCmds(cmds [][]string) error {
 	for _, cmd := range cmds {
-		_, err := i.exec.CombinedOutput("iptables", append([]string{"-w"}, cmd...), nil)
+		_, err := i.runCmd(cmd)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (i Iptables) runCmd(cmd []string) ([]byte, error) {
+	return i.exec.CombinedOutput("iptables", append([]string{"-w"}, cmd...), nil)
 }

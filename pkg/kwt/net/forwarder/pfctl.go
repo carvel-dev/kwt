@@ -45,6 +45,15 @@ func NewPfctl(opts PfctlOpts, logger Logger) *Pfctl {
 	}
 }
 
+func (f *Pfctl) CheckPrereqs() error {
+	out, err := f.run([]string{"-sa"}, nil)
+	if err != nil {
+		return fmt.Errorf("Checking 'pfctl' can run successfully: %s (output: %s)", err, out)
+	}
+
+	return nil
+}
+
 func (f *Pfctl) Add(subnets []net.IPNet, dnsIPs []net.IP) error {
 	// TODO check if disabled?
 	// TODO local loopback

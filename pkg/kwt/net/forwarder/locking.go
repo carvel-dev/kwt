@@ -23,6 +23,13 @@ func (f *Locking) SetForwarder(forwarder Forwarder) {
 	f.forwarder = forwarder
 }
 
+func (f *Locking) CheckPrereqs() error {
+	f.lock.Lock()
+	defer f.lock.Unlock()
+
+	return f.forwarder.CheckPrereqs()
+}
+
 func (f *Locking) Add(subnets []net.IPNet, dnsIPs []net.IP) error {
 	f.lock.Lock()
 	defer f.lock.Unlock()

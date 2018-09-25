@@ -54,6 +54,11 @@ func (o *ForwardOptions) Run() error {
 		return err
 	}
 
+	err = forwarder.CheckPrereqs()
+	if err != nil {
+		return err
+	}
+
 	subnets, err := ctlnet.NewConfiguredSubnets(o.Subnets).Subnets()
 	if err != nil {
 		return err

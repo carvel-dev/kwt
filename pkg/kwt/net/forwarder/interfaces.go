@@ -5,6 +5,7 @@ import (
 )
 
 type Forwarder interface {
+	CheckPrereqs() error
 	Add([]net.IPNet, []net.IP) error
 	Reset() error
 }
