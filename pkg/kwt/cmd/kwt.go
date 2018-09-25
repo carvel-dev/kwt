@@ -74,6 +74,7 @@ func NewKwtCmd(o *KwtOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Command 
 	resourceCmd.Hidden = true
 	resourceCmd.AddCommand(cmdres.NewListCmd(cmdres.NewListOptions(o.depsFactory, o.ui), flagsFactory))
 	resourceCmd.AddCommand(cmdres.NewGetCmd(cmdres.NewGetOptions(o.depsFactory, o.ui), flagsFactory))
+	resourceCmd.AddCommand(cmdres.NewCreateNamespaceCmd(cmdres.NewCreateNamespaceOptions(o.depsFactory, o.ui), flagsFactory))
 	resourceCmd.AddCommand(cmdres.NewDeleteCmd(cmdres.NewDeleteOptions(o.depsFactory, o.ui), flagsFactory))
 	cmd.AddCommand(resourceCmd)
 
