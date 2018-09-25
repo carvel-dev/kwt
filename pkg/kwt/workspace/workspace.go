@@ -22,6 +22,17 @@ var _ Workspace = &WorkspaceImpl{}
 
 func (w *WorkspaceImpl) Name() string { return w.pod.Name }
 
+func (w *WorkspaceImpl) Privileged() bool {
+	for _, cont := range w.pod.Spec.Containers {
+		if cont.SecurityContext != nil {
+			if cont.SecurityContext.Privileged != nil && *cont.SecurityContext.Privileged {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (w *WorkspaceImpl) Ports() []string {
 	var result []string
 	for _, cont := range w.pod.Spec.Containers {

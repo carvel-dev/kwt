@@ -11,6 +11,7 @@ type Workspace interface {
 	CreationTime() time.Time
 
 	Ports() []string
+	Privileged() bool
 
 	LastUsedTime() time.Time
 	MarkUse() error
