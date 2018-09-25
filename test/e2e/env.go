@@ -7,14 +7,12 @@ import (
 )
 
 type Env struct {
-	Namespace        string
-	ServiceClusterIP string
+	Namespace string
 }
 
 func BuildEnv(t *testing.T) Env {
 	env := Env{
-		Namespace:        os.Getenv("KWT_E2E_NAMESPACE"),
-		ServiceClusterIP: os.Getenv("KWT_E2E_SERVICE_CLUSTER_IP"),
+		Namespace: os.Getenv("KWT_E2E_NAMESPACE"),
 	}
 	env.Validate(t)
 	return env
@@ -25,9 +23,6 @@ func (e Env) Validate(t *testing.T) {
 
 	if len(e.Namespace) == 0 {
 		errStrs = append(errStrs, "Expected Namespace to be non-empty")
-	}
-	if len(e.ServiceClusterIP) == 0 {
-		errStrs = append(errStrs, "Expected ServiceClusterIP to be non-empty")
 	}
 
 	if len(errStrs) > 0 {

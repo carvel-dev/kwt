@@ -34,11 +34,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a5c9d722bb11ba9d28933a6c19afb83905d02cf9a2e70878d422768149b70626"
+  digest = "1:4d4f9ef3fdc562d6620a5565eee34c68b0d9ec40f7e0663160d750933e727e41"
   name = "github.com/cppforlife/go-cli-ui"
   packages = [
     "ui",
     "ui/table",
+    "ui/test",
   ]
   pruneopts = "NUT"
   revision = "5c4f53402506fa5100563e9a831feb6d65a95eaf"
@@ -595,6 +596,7 @@
     "github.com/cppforlife/cobrautil",
     "github.com/cppforlife/go-cli-ui/ui",
     "github.com/cppforlife/go-cli-ui/ui/table",
+    "github.com/cppforlife/go-cli-ui/ui/test",
     "github.com/cppforlife/knctl/pkg/knctl/cobrautil",
     "github.com/miekg/dns",
     "github.com/spf13/cobra",

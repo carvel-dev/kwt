@@ -21,22 +21,7 @@ jobs:
       run:
         path: /bin/bash
         args:
-        - -c
-        - |
-          set -e -x -u
-          apt-get -y update
-          apt-get -y install wget curl
-
-          wget -O- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz > /tmp/go
-          echo "fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  /tmp/go" | sha256sum -c
-          tar -C /usr/local -xzf /tmp/go
-          export PATH=$PATH:/usr/local/go/bin
-
-          export GOPATH=$PWD/gopath
-          cd $GOPATH/src/github.com/cppforlife/kwt
-
-          ./hack/build.sh
-          ./hack/test.sh
+        - ci/unit-tests.sh
       inputs:
       - name: kwt
         path: gopath/src/github.com/cppforlife/kwt
@@ -56,40 +41,17 @@ jobs:
           version: xenial
       params:
         KUBECONFIG_CONTENTS: ((kubeconfig))
+      privileged: true
       run:
         path: /bin/bash
         args:
         - -c
         - |
-          set -e -x -u
-          apt-get -y update
-          apt-get -y install wget curl gnupg
-
-          apt-get install -y apt-transport-https
-          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-          touch /etc/apt/sources.list.d/kubernetes.list 
-          echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-          apt-get -y update
-          apt-get -y install kubectl
-
-          wget -O- https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz > /tmp/go
-          echo "fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  /tmp/go" | sha256sum -c
-          tar -C /usr/local -xzf /tmp/go
-          export PATH=$PATH:/usr/local/go/bin
-
           mkdir -p ~/.kube
           set +x
           echo "$KUBECONFIG_CONTENTS" > ~/.kube/config
           set -x
-
-          export GOPATH=$PWD/gopath
-          cd $GOPATH/src/github.com/cppforlife/kwt
-
-          ./hack/build.sh
-          ln -s $PWD/kwt /usr/local/bin/kwt
-
-          export KWT_E2E_NAMESPACE=default
-          ./hack/test-e2e.sh
+          ./ci/e2e-tests.sh
       inputs:
       - name: kwt
         path: gopath/src/github.com/cppforlife/kwt

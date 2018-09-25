@@ -8,11 +8,11 @@ import (
 
 func TestCLIErrorsForFlagsBeforeExtraArgs(t *testing.T) {
 	env := BuildEnv(t)
-	ctl := Kwt{t, env.Namespace, Logger{}}
+	kwt := Kwt{t, env.Namespace, Logger{}}
 
 	var stderr bytes.Buffer
 
-	_, err := ctl.RunWithOpts(
+	_, err := kwt.RunWithOpts(
 		[]string{"workspace", "delete"},
 		RunOpts{StderrWriter: &stderr, NoNamespace: true, AllowError: true},
 	)
@@ -31,7 +31,7 @@ func TestCLIErrorsForFlagsBeforeExtraArgs(t *testing.T) {
 
 func TestCLIErrorsForCommandGroups(t *testing.T) {
 	env := BuildEnv(t)
-	ctl := Kwt{t, env.Namespace, Logger{}}
+	kwt := Kwt{t, env.Namespace, Logger{}}
 
 	// For commands with children commands it's friendlier ux
 	// to ignore extra arguments and show available subcommands
@@ -40,7 +40,7 @@ func TestCLIErrorsForCommandGroups(t *testing.T) {
 	for _, cmd := range cmdsWithSubcmds {
 		var stderr bytes.Buffer
 
-		_, err := ctl.RunWithOpts(
+		_, err := kwt.RunWithOpts(
 			[]string{cmd, "test-subcmd"},
 			RunOpts{StderrWriter: &stderr, NoNamespace: true, AllowError: true},
 		)
