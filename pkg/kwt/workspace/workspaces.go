@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	workspaceLabel = "kwt.cppforlife.com/workspace"
+	workspaceLabel       = "kwt.cppforlife.com/workspace"
+	workspaceLastUsedAnn = "kwt.cppforlife.com/workspace-last-used"
 )
 
 type Workspaces struct {

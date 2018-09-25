@@ -2,6 +2,8 @@ package workspace
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	ctlkube "github.com/cppforlife/kwt/pkg/kwt/kube"
@@ -19,6 +21,16 @@ type WorkspaceImpl struct {
 var _ Workspace = &WorkspaceImpl{}
 
 func (w *WorkspaceImpl) Name() string { return w.pod.Name }
+
+func (w *WorkspaceImpl) Ports() []string {
+	var result []string
+	for _, cont := range w.pod.Spec.Containers {
+		for _, port := range cont.Ports {
+			result = append(result, strconv.Itoa(int(port.ContainerPort))+"/"+strings.ToLower(string(port.Protocol)))
+		}
+	}
+	return result
+}
 
 func (w *WorkspaceImpl) CreationTime() time.Time { return w.pod.CreationTimestamp.Time }
 

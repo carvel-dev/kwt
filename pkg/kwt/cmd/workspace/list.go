@@ -48,6 +48,8 @@ func (o *ListOptions) Run() error {
 
 		Header: []uitable.Header{
 			uitable.NewHeader("Name"),
+			uitable.NewHeader("Ports"),
+			uitable.NewHeader("Last used"),
 			uitable.NewHeader("Age"),
 		},
 
@@ -59,6 +61,8 @@ func (o *ListOptions) Run() error {
 	for _, workspace := range wsList {
 		table.Rows = append(table.Rows, []uitable.Value{
 			uitable.NewValueString(workspace.Name()),
+			cmdcore.NewValueStringsSingleLine(workspace.Ports()),
+			cmdcore.NewValueAge(workspace.LastUsedTime()),
 			cmdcore.NewValueAge(workspace.CreationTime()),
 		})
 	}

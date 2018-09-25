@@ -42,6 +42,8 @@ func (o *EnterOptions) Run() error {
 		return err
 	}
 
+	_ = workspace.MarkUse()
+
 	cancelCh := make(chan struct{})
 
 	err = workspace.WaitForStart(cancelCh)

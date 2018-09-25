@@ -10,6 +10,11 @@ type Workspace interface {
 	Name() string
 	CreationTime() time.Time
 
+	Ports() []string
+
+	LastUsedTime() time.Time
+	MarkUse() error
+
 	WaitForStart(chan struct{}) error
 
 	Enter() error

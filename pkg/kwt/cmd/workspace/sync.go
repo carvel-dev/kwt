@@ -56,6 +56,8 @@ func (o *SyncOptions) Run() error {
 		return err
 	}
 
+	_ = workspace.MarkUse()
+
 	uploadErr := UploadOperation{workspace, o.SyncFlags.Inputs, o.ui, restConfig}.Run()
 	downloadErr := DownloadOperation{workspace, o.SyncFlags.Outputs, o.ui, restConfig}.Run()
 
