@@ -1,6 +1,6 @@
 # kwt
 
-Kubernetes Workspace Tools CLI (`kwt`) provides helpful set of commands for application developers to develop applications with Kubernetes.
+Kubernetes Workstation Tools CLI (`kwt`) provides helpful set of commands for application developers to develop applications with Kubernetes.
 
 Grab pre-built binaries from the [Releases page](https://github.com/cppforlife/kwt/releases).
 
@@ -37,6 +37,10 @@ Above command used `--input` (`-i`) to upload local current directory.
 Alterntaively if you want empty container with a shell:
 
 ```bash
+kwt workspace create
+# ...snip... obtain workspace name
+kwt workspace enter -w <some-name>
+# or
 kwt workspace create --enter
 ```
 
@@ -45,4 +49,10 @@ In some cases you may want to run additional scripts in an existing workspaces:
 ```bash
 kwt workspace ls
 kwt workspace run -w <some-name> -i kwt=.:gopath/src/github.com/cppforlife/kwt -c './gopath/src/github.com/cppforlife/kwt/ci/unit-tests.sh'
+```
+
+Once done, delete your workspace
+
+```bash
+kwt workspace delete -w <some-name>
 ```
