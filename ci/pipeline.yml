@@ -21,7 +21,7 @@ jobs:
       run:
         path: /bin/bash
         args:
-        - ci/unit-tests.sh
+        - gopath/src/github.com/cppforlife/kwt/ci/unit-tests.sh
       inputs:
       - name: kwt
         path: gopath/src/github.com/cppforlife/kwt
@@ -32,6 +32,7 @@ jobs:
     trigger: true
   - get: kwt
   - task: test
+    privileged: true
     config:
       platform: linux
       image_resource:
@@ -41,7 +42,6 @@ jobs:
           version: xenial
       params:
         KUBECONFIG_CONTENTS: ((kubeconfig))
-      privileged: true
       run:
         path: /bin/bash
         args:
@@ -51,7 +51,7 @@ jobs:
           set +x
           echo "$KUBECONFIG_CONTENTS" > ~/.kube/config
           set -x
-          ./ci/e2e-tests.sh
+          ./gopath/src/github.com/cppforlife/kwt/ci/e2e-tests.sh
       inputs:
       - name: kwt
         path: gopath/src/github.com/cppforlife/kwt
