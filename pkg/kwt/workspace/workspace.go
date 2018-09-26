@@ -55,10 +55,10 @@ func (w *WorkspaceImpl) WaitForStart(cancelCh chan struct{}) error {
 }
 
 func (w *WorkspaceImpl) Upload(input UploadInput, restConfig *rest.Config) error {
+	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
 	remoteDirPath := input.RemotePath(ContainerEnv{}.WorkingDir())
 
-	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
-
+	// TODO stop recreating directory (note that cp will not delete deleted content)
 	err := executor.Execute([]string{"/bin/rm", "-rf", remoteDirPath}, ctlkube.ExecuteOpts{})
 	if err != nil {
 		return fmt.Errorf("Removing remote directory: %s", err)
@@ -69,16 +69,23 @@ func (w *WorkspaceImpl) Upload(input UploadInput, restConfig *rest.Config) error
 		return fmt.Errorf("Make remote directory: %s", err)
 	}
 
-	// TODO does not remove removed directories
-	err = ctlkube.NewDirCp(executor).Execute(input.LocalDirPath, remoteDirPath)
+	err = ctlkube.NewDirCp(executor).Up(input.LocalPath(), remoteDirPath)
 	if err != nil {
-		return fmt.Errorf("Uploading files for '%s' (%s): %s", input.Name, input.LocalDirPath, err)
+		return fmt.Errorf("Uploading files for input '%s' (%s): %s", input.Name, input.LocalPath(), err)
 	}
 
 	return nil
 }
 
 func (w *WorkspaceImpl) Download(output DownloadOutput, restConfig *rest.Config) error {
+	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
+	remoteDirPath := output.RemotePath(ContainerEnv{}.WorkingDir())
+
+	err := ctlkube.NewDirCp(executor).Down(output.LocalPath(), remoteDirPath)
+	if err != nil {
+		return fmt.Errorf("Downloading files for output '%s' (%s): %s", output.Name, output.LocalPath(), err)
+	}
+
 	return nil
 }
 

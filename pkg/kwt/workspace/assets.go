@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"fmt"
 	"path/filepath"
 )
 
@@ -21,7 +22,13 @@ type DownloadOutput struct {
 }
 
 func (i Asset) LocalPath() string {
-	return i.LocalDirPath
+	path, err := filepath.Abs(i.LocalDirPath)
+	if err != nil {
+		// TODO better than panic
+		panic(fmt.Sprintf("Failed abs path '%s': %s", i.LocalDirPath, err))
+	}
+
+	return path
 }
 
 func (i Asset) RemotePath(workspaceDirPath string) string {
