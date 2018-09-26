@@ -45,14 +45,6 @@
   revision = "5c4f53402506fa5100563e9a831feb6d65a95eaf"
 
 [[projects]]
-  digest = "1:372a3aee66ce4ff8a4e0e75d0e290f5d2bef3aaf91d9726959a7abcbd812920c"
-  name = "github.com/cppforlife/knctl"
-  packages = ["pkg/knctl/cobrautil"]
-  pruneopts = "NUT"
-  revision = "5f8cc24e4b5fbea288ff90437b9f23947b9204a6"
-  version = "v0.0.6"
-
-[[projects]]
   digest = "1:7cb4fdca4c251b3ef8027c90ea35f70c7b661a593b9eeae34753c65499098bb1"
   name = "github.com/cpuguy83/go-md2man"
   packages = ["md2man"]
@@ -597,7 +589,6 @@
     "github.com/cppforlife/go-cli-ui/ui",
     "github.com/cppforlife/go-cli-ui/ui/table",
     "github.com/cppforlife/go-cli-ui/ui/test",
-    "github.com/cppforlife/knctl/pkg/knctl/cobrautil",
     "github.com/miekg/dns",
     "github.com/spf13/cobra",
     "github.com/spf13/cobra/doc",
@@ -611,6 +602,7 @@
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured",
     "k8s.io/apimachinery/pkg/runtime/schema",
+    "k8s.io/apimachinery/pkg/types",
     "k8s.io/apimachinery/pkg/util/duration",
     "k8s.io/apimachinery/pkg/util/intstr",
     "k8s.io/apimachinery/pkg/util/wait",
