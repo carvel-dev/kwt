@@ -86,6 +86,12 @@ func (o *StartDNSOptions) Run() error {
 	go func() {
 		<-dnsServerStartedCh
 
+		dnsTCPPort, err := o.portFromAddr(dnsServer.TCPAddr())
+		if err != nil {
+			forwarderErrCh <- err
+			return
+		}
+
 		dnsUDPPort, err := o.portFromAddr(dnsServer.UDPAddr())
 		if err != nil {
 			forwarderErrCh <- err
@@ -94,6 +100,7 @@ func (o *StartDNSOptions) Run() error {
 
 		opts := ctlfwd.ForwarderOpts{
 			DstTCPPort:    1234,
+			DstDNSTCPPort: dnsTCPPort,
 			DstDNSUDPPort: dnsUDPPort,
 		}
 
