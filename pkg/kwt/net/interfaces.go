@@ -25,6 +25,7 @@ type DNSServerFactory interface {
 
 type DNSServer interface {
 	Serve(startedCh chan struct{}) error
+	TCPAddr() net.Addr
 	UDPAddr() net.Addr
 	Shutdown() error
 }

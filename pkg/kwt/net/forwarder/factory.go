@@ -21,6 +21,7 @@ func NewFactory(processGroupID int, logger Logger) Factory {
 
 type ForwarderOpts struct {
 	DstTCPPort    int
+	DstDNSTCPPort int
 	DstDNSUDPPort int
 }
 
@@ -31,6 +32,7 @@ func (f Factory) NewForwarder(opts ForwarderOpts) (Forwarder, error) {
 	case osLinux:
 		opts := IptablesOpts{
 			DstTCPPort:     opts.DstTCPPort,
+			DstDNSTCPPort:  opts.DstDNSTCPPort,
 			DstDNSUDPPort:  opts.DstDNSUDPPort,
 			ProcessGroupID: f.processGroupID,
 		}
@@ -39,6 +41,7 @@ func (f Factory) NewForwarder(opts ForwarderOpts) (Forwarder, error) {
 	case osDarwin:
 		opts := PfctlOpts{
 			DstTCPPort:     opts.DstTCPPort,
+			DstDNSTCPPort:  opts.DstDNSTCPPort,
 			DstDNSUDPPort:  opts.DstDNSUDPPort,
 			ProcessGroupID: f.processGroupID,
 		}

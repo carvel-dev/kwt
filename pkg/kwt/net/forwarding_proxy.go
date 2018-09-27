@@ -64,7 +64,7 @@ func (o *ForwardingProxy) Serve(dstConnFactory dstconn.Factory, subnets []net.IP
 		<-udpProxyStartedCh
 		<-dnsServerStartedCh
 
-		actualForwarder, err := o.buildForwarder(tcpProxy.Addr(), dnsServer.UDPAddr())
+		actualForwarder, err := o.buildForwarder(tcpProxy, dnsServer)
 		if err != nil {
 			forwarderErrCh <- err
 			return
@@ -137,19 +137,25 @@ func (o *ForwardingProxy) Shutdown() error {
 	return nil
 }
 
-func (o *ForwardingProxy) buildForwarder(tcpAddr, dnsUDPAddr net.Addr) (forwarder.Forwarder, error) {
-	tcpPort, err := o.portFromAddr(tcpAddr)
+func (o *ForwardingProxy) buildForwarder(tcpProxy *TCPProxy, dnsServer DNSServer) (forwarder.Forwarder, error) {
+	tcpPort, err := o.portFromAddr(tcpProxy.Addr())
 	if err != nil {
 		return nil, err
 	}
 
-	dnsUDPPort, err := o.portFromAddr(dnsUDPAddr)
+	dnsTCPPort, err := o.portFromAddr(dnsServer.TCPAddr())
+	if err != nil {
+		return nil, err
+	}
+
+	dnsUDPPort, err := o.portFromAddr(dnsServer.UDPAddr())
 	if err != nil {
 		return nil, err
 	}
 
 	return o.forwarderFactory.NewForwarder(forwarder.ForwarderOpts{
 		DstTCPPort:    tcpPort,
+		DstDNSTCPPort: dnsTCPPort,
 		DstDNSUDPPort: dnsUDPPort,
 	})
 }

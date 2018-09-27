@@ -20,6 +20,7 @@ var _ Forwarder = Iptables{}
 
 type IptablesOpts struct {
 	DstTCPPort     int
+	DstDNSTCPPort  int
 	DstDNSUDPPort  int
 	ProcessGroupID int
 }
@@ -75,6 +76,13 @@ func (i Iptables) Add(subnets []net.IPNet, dnsIPs []net.IP) error {
 		}
 
 		for _, ip := range dnsIPs {
+			cmds = append(cmds, append([]string{
+				"-t", "nat", "-A", chain.Name,
+				"-j", "REDIRECT", "--dest", ip.String() + "/32", "-p", "tcp",
+				"--dport", "53", "--to-ports", strconv.Itoa(i.opts.DstDNSTCPPort),
+				"-m", "ttl", "!", "--ttl", "42",
+			}, chain.GroupCheck...))
+
 			cmds = append(cmds, append([]string{
 				"-t", "nat", "-A", chain.Name,
 				"-j", "REDIRECT", "--dest", ip.String() + "/32", "-p", "udp",

@@ -37,7 +37,7 @@ func (s Server) Serve(startedCh chan struct{}) error {
 
 	startedCh <- struct{}{}
 
-	s.logger.Info(s.logTag, "Started DNS server on %s", s.UDPAddr())
+	s.logger.Info(s.logTag, "Started DNS server on %s (TCP) and %s (UDP)", s.TCPAddr(), s.UDPAddr())
 
 	for _, srv := range s.servers {
 		go func(srv *dns.Server) {
@@ -53,6 +53,17 @@ func (s Server) Serve(startedCh chan struct{}) error {
 	}
 }
 
+func (s Server) TCPAddr() net.Addr {
+	for _, srv := range s.servers {
+		switch {
+		case srv.Listener != nil:
+			return srv.Listener.Addr()
+		}
+	}
+
+	panic("Unknown TCP DNS server address")
+}
+
 func (s Server) UDPAddr() net.Addr {
 	for _, srv := range s.servers {
 		switch {
@@ -63,9 +74,7 @@ func (s Server) UDPAddr() net.Addr {
 		}
 	}
 
-	// TODO support TCP addrs
-	// addrs = append(addrs, srv.Listener.Addr())
-	panic("Unknown DNS server address")
+	panic("Unknown UDP DNS server address")
 }
 
 func (s Server) Shutdown() error {

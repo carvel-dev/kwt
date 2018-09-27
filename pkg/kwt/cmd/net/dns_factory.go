@@ -50,7 +50,7 @@ func (f DNSServerFactory) NewDNSServer(dstConnFactory dstconn.Factory) (ctlnet.D
 
 func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctldns.BuildOpts, error) {
 	opts := ctldns.BuildOpts{
-		ListenAddrs:   []string{"127.0.0.1:53"},
+		ListenAddrs:   []string{"localhost:0"},
 		RecursorAddrs: f.dnsFlags.Recursors,
 
 		Domains: map[string]ctldns.IPResolver{
@@ -130,6 +130,7 @@ func (s CombinedDNSServer) Serve(startedCh chan struct{}) error {
 	return s.firstErrOrNil(errs)
 }
 
+func (s CombinedDNSServer) TCPAddr() net.Addr { return s.dnsServer.TCPAddr() }
 func (s CombinedDNSServer) UDPAddr() net.Addr { return s.dnsServer.UDPAddr() }
 
 func (s CombinedDNSServer) Shutdown() error {

@@ -24,6 +24,7 @@ func TestIptables(t *testing.T) {
 	exec := &FakeCmdExecutor{}
 	opts := IptablesOpts{
 		DstTCPPort:     123,
+		DstDNSTCPPort:  200,
 		DstDNSUDPPort:  124,
 		ProcessGroupID: 125,
 	}
@@ -46,7 +47,9 @@ func TestIptables(t *testing.T) {
 		[]string{"iptables", "-w", "-t", "nat", "-I", "OUTPUT", "1", "-j", "kwt-tcp-123-output"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "10.0.0.0/24", "-p", "tcp", "--to-ports", "123", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "192.0.0.0/24", "-p", "tcp", "--to-ports", "123", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
+		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "1.1.1.1/32", "-p", "tcp", "--dport", "53", "--to-ports", "200", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "1.1.1.1/32", "-p", "udp", "--dport", "53", "--to-ports", "124", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
+		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "2.2.2.2/32", "-p", "tcp", "--dport", "53", "--to-ports", "200", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "REDIRECT", "--dest", "2.2.2.2/32", "-p", "udp", "--dport", "53", "--to-ports", "124", "-m", "ttl", "!", "--ttl", "42", "-m", "owner", "!", "--gid-owner", "125"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-output", "-j", "RETURN", "--dest", "127.0.0.0/8", "-p", "tcp"},
 
@@ -55,7 +58,9 @@ func TestIptables(t *testing.T) {
 		[]string{"iptables", "-w", "-t", "nat", "-I", "PREROUTING", "1", "-j", "kwt-tcp-123-prerouting"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "10.0.0.0/24", "-p", "tcp", "--to-ports", "123", "-m", "ttl", "!", "--ttl", "42"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "192.0.0.0/24", "-p", "tcp", "--to-ports", "123", "-m", "ttl", "!", "--ttl", "42"},
+		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "1.1.1.1/32", "-p", "tcp", "--dport", "53", "--to-ports", "200", "-m", "ttl", "!", "--ttl", "42"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "1.1.1.1/32", "-p", "udp", "--dport", "53", "--to-ports", "124", "-m", "ttl", "!", "--ttl", "42"},
+		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "2.2.2.2/32", "-p", "tcp", "--dport", "53", "--to-ports", "200", "-m", "ttl", "!", "--ttl", "42"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "REDIRECT", "--dest", "2.2.2.2/32", "-p", "udp", "--dport", "53", "--to-ports", "124", "-m", "ttl", "!", "--ttl", "42"},
 		[]string{"iptables", "-w", "-t", "nat", "-A", "kwt-tcp-123-prerouting", "-j", "RETURN", "--dest", "127.0.0.0/8", "-p", "tcp"},
 	}

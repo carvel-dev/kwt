@@ -29,6 +29,7 @@ var _ Forwarder = &Pfctl{}
 
 type PfctlOpts struct {
 	DstTCPPort    int
+	DstDNSTCPPort int
 	DstDNSUDPPort int
 
 	// 0 is root, so root produced traffic wont go through proxy by default
@@ -151,8 +152,10 @@ func (f *Pfctl) addRules(subnets []net.IPNet, dnsIPs []net.IP) error {
 table <forward_subnets> {|subnets|}
 table <dns_servers> {|dnsservers|}
 rdr pass on lo0 inet proto tcp to <forward_subnets> -> 127.0.0.1 port |tcpport|
+rdr pass on lo0 inet proto tcp to <dns_servers> port 53 -> 127.0.0.1 port |dnstcpport|
 rdr pass on lo0 inet proto udp to <dns_servers> port 53 -> 127.0.0.1 port |dnsudpport|
 pass out route-to lo0 inet proto tcp to <forward_subnets> keep state |excludegroup|
+pass out route-to lo0 inet proto tcp to <dns_servers> port 53 keep state |excludegroup|
 pass out route-to lo0 inet proto udp to <dns_servers> port 53 keep state |excludegroup|
 `)
 
@@ -167,6 +170,7 @@ pass out route-to lo0 inet proto udp to <dns_servers> port 53 keep state |exclud
 	}
 
 	rules = strings.Replace(rules, "|tcpport|", strconv.Itoa(f.opts.DstTCPPort), -1)
+	rules = strings.Replace(rules, "|dnstcpport|", strconv.Itoa(f.opts.DstDNSTCPPort), -1)
 	rules = strings.Replace(rules, "|dnsudpport|", strconv.Itoa(f.opts.DstDNSUDPPort), -1)
 	rules = strings.Replace(rules, "|subnets|", strings.Join(subnetsStrs, ","), -1)
 	rules = strings.Replace(rules, "|dnsservers|", strings.Join(dnsServerStrs, ","), -1)
