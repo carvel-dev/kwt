@@ -8,7 +8,7 @@ import (
 )
 
 type ResolverDialer struct {
-	Name     string
+	Name string
 	Func func(ctx context.Context, network, address string) (net.Conn, error)
 }
 
@@ -19,7 +19,7 @@ func TestNetDNSResolution(t *testing.T) {
 	kubectl := Kubectl{t, env.Namespace, Logger{}}
 	kwtNet := NewKwtNet(kwt, t, Logger{})
 
-	kwtNet.Start()
+	kwtNet.Start([]string{})
 	defer kwtNet.End()
 
 	guestbookAddrs := Guestbook{kwt, kubectl, t, logger}.Install()

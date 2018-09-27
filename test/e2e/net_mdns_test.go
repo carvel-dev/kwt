@@ -3,10 +3,10 @@ package e2e
 import (
 	"fmt"
 	"os/exec"
-	"testing"
-	"strings"
-	"time"
 	"runtime"
+	"strings"
+	"testing"
+	"time"
 )
 
 const dscacheutilIPAddrPrefix = "ip_address: "
@@ -22,7 +22,7 @@ func TestNetmDNSResolution(t *testing.T) {
 	kubectl := Kubectl{t, env.Namespace, Logger{}}
 	kwtNet := NewKwtNet(kwt, t, Logger{})
 
-	kwtNet.Start()
+	kwtNet.Start([]string{})
 	defer kwtNet.End()
 
 	guestbookAddrs := Guestbook{kwt, kubectl, t, logger}.Install()

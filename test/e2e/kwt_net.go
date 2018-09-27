@@ -34,9 +34,17 @@ func (k *KwtNet) CollectedOutput() string {
 	return k.collectedOutput.Current()
 }
 
-func (k *KwtNet) Start() {
+func (k *KwtNet) Start(args []string) {
 	k.cleanUp()
+	k.StartWithoutCleanup(args)
+}
 
+func (k *KwtNet) End() {
+	k.EndWithoutCleanup()
+	k.cleanUp()
+}
+
+func (k *KwtNet) StartWithoutCleanup(args []string) {
 	k.logger.Section("Starting net start in background", func() {
 		go func() {
 			k.kwt.RunWithOpts([]string{"net", "start", "--tty"}, RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh, NoNamespace: true})
@@ -67,13 +75,11 @@ func (k *KwtNet) Start() {
 	})
 }
 
-func (k *KwtNet) End() {
+func (k *KwtNet) EndWithoutCleanup() {
 	k.logger.Section("Terminating net start tailing", func() {
 		k.cancelCh <- struct{}{}
 		<-k.doneCh
 	})
-
-	k.cleanUp()
 }
 
 func (k *KwtNet) cleanUp() {

@@ -5,17 +5,22 @@ import (
 	"testing"
 )
 
-func TestNetTCPandHTTP(t *testing.T) {
+func TestNetTCPandHTTPMultiple(t *testing.T) {
 	env := BuildEnv(t)
 	logger := Logger{}
 	kwt := Kwt{t, env.Namespace, Logger{}}
 	kubectl := Kubectl{t, env.Namespace, Logger{}}
-	kwtNet := NewKwtNet(kwt, t, Logger{})
-
-	kwtNet.Start([]string{})
-	defer kwtNet.End()
 
 	guestbookAddrs := Guestbook{kwt, kubectl, t, logger}.Install()
+
+	kwtNet1 := NewKwtNet(kwt, t, logger)
+	kwtNet1.Start([]string{"--subnet", guestbookAddrs.FrontendSvcIP + "/32"})
+	defer kwtNet1.End()
+
+	kwtNet2 := NewKwtNet(kwt, t, logger)
+	kwtNet2.StartWithoutCleanup([]string{"--subnet", guestbookAddrs.RedisSvcIP + "/32"})
+	defer kwtNet2.EndWithoutCleanup()
+
 	netProbe := NetworkProbe{t, logger}
 
 	for _, url := range []string{
