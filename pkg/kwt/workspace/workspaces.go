@@ -10,6 +10,7 @@ import (
 const (
 	workspaceLabel       = "kwt.cppforlife.com/workspace"
 	workspaceLastUsedAnn = "kwt.cppforlife.com/workspace-last-used"
+	workspaceAltNamesAnn = "kwt.cppforlife.com/workspace-alt-names"
 )
 
 type Workspaces struct {

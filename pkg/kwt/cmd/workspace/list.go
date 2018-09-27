@@ -48,6 +48,7 @@ func (o *ListOptions) Run() error {
 
 		Header: []uitable.Header{
 			uitable.NewHeader("Name"),
+			uitable.NewHeader("Alt names"),
 			uitable.NewHeader("Ports"),
 			uitable.NewHeader("Privileged"),
 			uitable.NewHeader("Last used"),
@@ -62,6 +63,7 @@ func (o *ListOptions) Run() error {
 	for _, workspace := range wsList {
 		table.Rows = append(table.Rows, []uitable.Value{
 			uitable.NewValueString(workspace.Name()),
+			cmdcore.NewValueStringsSingleLine(workspace.AltNames()),
 			cmdcore.NewValueStringsSingleLine(workspace.Ports()),
 			uitable.NewValueBool(workspace.Privileged()),
 			cmdcore.NewValueAge(workspace.LastUsedTime()),

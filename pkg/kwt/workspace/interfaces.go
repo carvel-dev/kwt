@@ -16,6 +16,9 @@ type Workspace interface {
 	LastUsedTime() time.Time
 	MarkUse() error
 
+	AltNames() []string
+	AddAltName(string) error
+
 	WaitForStart(chan struct{}) error
 
 	Enter() error
