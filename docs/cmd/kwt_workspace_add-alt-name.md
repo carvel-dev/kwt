@@ -1,19 +1,20 @@
-## kwt workspace delete
+## kwt workspace add-alt-name
 
-Delete workspace
+Add alternative name to workspace
 
 ### Synopsis
 
-Delete workspace
+Add alternative name to workspace
 
 ```
-kwt workspace delete [flags]
+kwt workspace add-alt-name [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help               help for delete
+  -h, --help               help for add-alt-name
+  -a, --name string        Specified alternative name
   -n, --namespace string   Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
   -w, --workspace string   Specified workspace
 ```

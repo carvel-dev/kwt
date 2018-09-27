@@ -32,5 +32,5 @@ kwt workspace enter [flags]
 
 ### SEE ALSO
 
-* [kwt workspace](kwt_workspace.md)	 - Workspace (create, delete, enter, list, run, sync)
+* [kwt workspace](kwt_workspace.md)	 - Workspace (add-alt-name, create, delete, enter, install, list, run, sync)
 

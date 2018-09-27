@@ -1,20 +1,24 @@
-## kwt workspace delete
+## kwt workspace install
 
-Delete workspace
+Install predefined application into workspace
 
 ### Synopsis
 
-Delete workspace
+Install predefined application into workspace
 
 ```
-kwt workspace delete [flags]
+kwt workspace install [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help               help for delete
+      --chrome             Install Google Chrome
+      --desktop            Configure X11 and VNC access
+      --firefox            Install Firefox
+  -h, --help               help for install
   -n, --namespace string   Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
+      --sublime            Install Sublime Text
   -w, --workspace string   Specified workspace
 ```
 

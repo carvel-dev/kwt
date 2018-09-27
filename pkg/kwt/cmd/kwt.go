@@ -85,6 +85,7 @@ func NewKwtCmd(o *KwtOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Command 
 	workspaceCmd.AddCommand(cmdwork.NewEnterCmd(cmdwork.NewEnterOptions(o.depsFactory, o.ui), flagsFactory))
 	workspaceCmd.AddCommand(cmdwork.NewSyncCmd(cmdwork.NewSyncOptions(o.depsFactory, o.configFactory, o.ui), flagsFactory))
 	workspaceCmd.AddCommand(cmdwork.NewRunCmd(cmdwork.NewRunOptions(o.depsFactory, o.configFactory, o.ui), flagsFactory))
+	workspaceCmd.AddCommand(cmdwork.NewInstallCmd(cmdwork.NewInstallOptions(o.depsFactory, o.configFactory, o.ui), flagsFactory))
 	workspaceCmd.AddCommand(cmdwork.NewAddAltNameCmd(cmdwork.NewAddAltNameOptions(o.depsFactory, o.ui), flagsFactory))
 	cmd.AddCommand(workspaceCmd)
 

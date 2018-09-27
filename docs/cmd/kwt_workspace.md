@@ -1,10 +1,10 @@
 ## kwt workspace
 
-Workspace (create, delete, enter, list, run, sync)
+Workspace (add-alt-name, create, delete, enter, install, list, run, sync)
 
 ### Synopsis
 
-Workspace (create, delete, enter, list, run, sync)
+Workspace (add-alt-name, create, delete, enter, install, list, run, sync)
 
 ```
 kwt workspace [flags]
@@ -31,9 +31,11 @@ kwt workspace [flags]
 ### SEE ALSO
 
 * [kwt](kwt.md)	 - kwt helps develop with your Kubernetes cluster (net, version, workspace)
+* [kwt workspace add-alt-name](kwt_workspace_add-alt-name.md)	 - Add alternative name to workspace
 * [kwt workspace create](kwt_workspace_create.md)	 - Create workspace
 * [kwt workspace delete](kwt_workspace_delete.md)	 - Delete workspace
 * [kwt workspace enter](kwt_workspace_enter.md)	 - Enter workspace
+* [kwt workspace install](kwt_workspace_install.md)	 - Install predefined application into workspace
 * [kwt workspace list](kwt_workspace_list.md)	 - List all workspaces
 * [kwt workspace run](kwt_workspace_run.md)	 - Run executable within a workspace
 * [kwt workspace sync](kwt_workspace_sync.md)	 - Sync workspace
