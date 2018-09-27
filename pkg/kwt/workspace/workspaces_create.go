@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	workspaceDebugContainerName = "debug"
-	workspaceUserContainerName  = "user"
+	workspaceContainerName = "debug"
 )
 
 type CreateOpts struct {
@@ -42,22 +41,34 @@ func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
 			// Requires alpha feature in Kubernetes 1.11
 			// https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
 			// (once enabled can access filesystem as well: /proc/$pid/root)
-			ShareProcessNamespace: &trueBool,
+			// TODO ShareProcessNamespace: &trueBool,
 
-			Containers: []corev1.Container{
-				{
-					Name: workspaceDebugContainerName,
-
-					Image:           "ubuntu:xenial",
-					ImagePullPolicy: corev1.PullAlways,
-
-					Command: []string{"/bin/bash"},
-					Args:    []string{"-c", "while true; do sleep 86400; done"}, // sleep forever
-
-					WorkingDir: ContainerEnv{}.WorkingDir(),
-				},
-			},
+			Containers: []corev1.Container{{}},
 		},
+	}
+
+	if len(opts.Image) > 0 {
+		pod.Spec.Containers[0] = corev1.Container{
+			Name: workspaceContainerName,
+
+			Image:           opts.Image,
+			ImagePullPolicy: corev1.PullAlways,
+
+			Command: opts.Command,
+			Args:    opts.CommandArgs,
+		}
+	} else {
+		pod.Spec.Containers[0] = corev1.Container{
+			Name: workspaceContainerName,
+
+			Image:           "ubuntu:xenial",
+			ImagePullPolicy: corev1.PullAlways,
+
+			Command: []string{"/bin/bash"},
+			Args:    []string{"-c", "while true; do sleep 86400; done"}, // sleep forever
+
+			WorkingDir: ContainerEnv{}.WorkingDir(),
+		}
 	}
 
 	if len(opts.Ports) > 0 {
@@ -65,18 +76,6 @@ func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
 			pod.Spec.Containers[0].Ports = append(pod.Spec.Containers[0].Ports,
 				corev1.ContainerPort{Name: "port" + strconv.Itoa(i), ContainerPort: int32(port)})
 		}
-	}
-
-	if len(opts.Image) > 0 {
-		pod.Spec.Containers = append(pod.Spec.Containers, corev1.Container{
-			Name: workspaceUserContainerName,
-
-			Image:           opts.Image,
-			ImagePullPolicy: corev1.PullAlways,
-
-			Command: opts.Command,
-			Args:    opts.CommandArgs,
-		})
 	}
 
 	if opts.Privileged {

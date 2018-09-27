@@ -16,7 +16,7 @@ func (w *WorkspaceImpl) Enter() error {
 		return fmt.Errorf("Looking up kubectl binary location: %s", err)
 	}
 
-	return syscall.Exec(path, []string{path, "exec", "-it", w.pod.Name, "-c", workspaceDebugContainerName, "bash"}, os.Environ())
+	return syscall.Exec(path, []string{path, "exec", "-it", w.pod.Name, "-c", workspaceContainerName, "bash"}, os.Environ())
 }
 
 type ExecuteOpts struct {
@@ -28,7 +28,7 @@ type ExecuteOpts struct {
 }
 
 func (w *WorkspaceImpl) Execute(opts ExecuteOpts, restConfig *rest.Config) error {
-	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
+	executor := ctlkube.NewExec(w.pod, workspaceContainerName, w.coreClient, restConfig)
 
 	execOpts := ctlkube.ExecuteOpts{
 		Stdout: os.Stdout,

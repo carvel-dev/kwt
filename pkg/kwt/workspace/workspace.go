@@ -55,7 +55,7 @@ func (w *WorkspaceImpl) WaitForStart(cancelCh chan struct{}) error {
 }
 
 func (w *WorkspaceImpl) Upload(input UploadInput, restConfig *rest.Config) error {
-	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
+	executor := ctlkube.NewExec(w.pod, workspaceContainerName, w.coreClient, restConfig)
 	remoteDirPath := input.RemotePath(ContainerEnv{}.WorkingDir())
 
 	// TODO stop recreating directory (note that cp will not delete deleted content)
@@ -78,7 +78,7 @@ func (w *WorkspaceImpl) Upload(input UploadInput, restConfig *rest.Config) error
 }
 
 func (w *WorkspaceImpl) Download(output DownloadOutput, restConfig *rest.Config) error {
-	executor := ctlkube.NewExec(w.pod, workspaceDebugContainerName, w.coreClient, restConfig)
+	executor := ctlkube.NewExec(w.pod, workspaceContainerName, w.coreClient, restConfig)
 	remoteDirPath := output.RemotePath(ContainerEnv{}.WorkingDir())
 
 	err := ctlkube.NewDirCp(executor).Down(output.LocalPath(), remoteDirPath)
