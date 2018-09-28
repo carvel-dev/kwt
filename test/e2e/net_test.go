@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	tcpProxyStartLine = `info: TCPProxy: Started proxy on`
+	tcpProxyStartLine    = `info: TCPProxy: Started proxy on`
 	tcpProxyStartedLine  = `info: TCPProxy: Started \d+\.\d+\.\d+\.\d+:\d+\-\>`
 	tcpProxyFinishedLine = `info: TCPProxy: Finished \d+\.\d+\.\d+\.\d+:\d+\-\>`
 )

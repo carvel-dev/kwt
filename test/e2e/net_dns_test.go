@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	dnsServerStartLine = `info: dns.Server: Started DNS server on`
+	dnsServerStartLine   = `info: dns.Server: Started DNS server on`
 	dnsCustomHandlerLine = `info: dns.CustomHandler: A:%s\.: Answering rcode=0`
 )
 

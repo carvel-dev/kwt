@@ -2,8 +2,8 @@ package e2e
 
 import (
 	"fmt"
-	"testing"
 	"strings"
+	"testing"
 )
 
 var (

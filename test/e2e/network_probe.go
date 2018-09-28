@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -8,7 +9,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-	"crypto/tls"
 )
 
 type NetworkProbe struct {
@@ -23,7 +23,7 @@ func (a NetworkProbe) HTTPGet(url, expectedOutput, description string) {
 				TLSNextProto: map[string]func(authority string, c *tls.Conn) http.RoundTripper{},
 
 				Proxy: http.ProxyFromEnvironment,
-				Dial:  (&net.Dialer{
+				Dial: (&net.Dialer{
 					Timeout:   30 * time.Second,
 					KeepAlive: 30 * time.Second,
 				}).Dial,
