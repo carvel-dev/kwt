@@ -114,6 +114,12 @@ Show pods in the current/specified namespace
 kwt net pods [-n ns1]
 ```
 
+Clean up on-cluster resources taken by `kwt net` (one pod and two secrets)
+
+```bash
+kwt net clean-up
+```
+
 ### Other tools
 
 - [`kubectl proxy` command](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/) acts as a reverse proxy. It rewrites HTTP URLs and does not offer access to TCP services making it not viable for some use cases.
