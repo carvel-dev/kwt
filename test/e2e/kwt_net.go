@@ -47,7 +47,7 @@ func (k *KwtNet) End() {
 func (k *KwtNet) StartWithoutCleanup(args []string) {
 	k.logger.Section("Starting net start in background", func() {
 		go func() {
-			k.kwt.RunWithOpts([]string{"net", "start", "--tty"}, RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh, NoNamespace: true})
+			k.kwt.RunWithOpts(append([]string{"net", "start", "--tty"}, args...), RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh, NoNamespace: true})
 			k.doneCh <- struct{}{}
 		}()
 	})
