@@ -102,6 +102,12 @@ Start networking access, allowing access to two subnets
 sudo -E kwt net start --subnet 10.19.247.0/24 --subnet 10.19.248.0/24
 ```
 
+Start networking access, and configure `example.com` or anything under it (such as `test.t.example.com`) to resolve to `127.0.0.1` (Hint: useful with `knctl` to forward requests to Knative ingress without official DNS changes)
+
+```bash
+sudo -E kwt net start --dns-map example.com=127.0.0.1
+```
+
 Show services in the current/specified namespace
 
 ```bash
