@@ -1,4 +1,4 @@
-## Workspace Commands
+## Workspace Commands (work in progress!)
 
 A lot of times you may want a "scratch" container to run some scripts or experiment with different commands but without affecting your local machine or consuming its resources. If you have a Kubernetes cluster, you can use following commands to do so quickly:
 
