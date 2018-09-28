@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
+	"crypto/tls"
 )
 
 type NetworkProbe struct {
@@ -16,7 +18,22 @@ type NetworkProbe struct {
 
 func (a NetworkProbe) HTTPGet(url, expectedOutput, description string) {
 	a.logger.Section(fmt.Sprintf("Test network accessibility to the HTTP service (%s) via '%s'", description, url), func() {
-		res, err := http.Get(url)
+		client := &http.Client{
+			Transport: &http.Transport{
+				TLSNextProto: map[string]func(authority string, c *tls.Conn) http.RoundTripper{},
+
+				Proxy: http.ProxyFromEnvironment,
+				Dial:  (&net.Dialer{
+					Timeout:   30 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).Dial,
+
+				TLSHandshakeTimeout: 30 * time.Second,
+				DisableKeepAlives:   true,
+			},
+		}
+
+		res, err := client.Get(url)
 		if err != nil {
 			a.t.Fatalf("Error making HTTP request: %s", err)
 		}
