@@ -4,7 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"regexp"
 	"testing"
+)
+
+var (
+	dnsServerStartLine = `info: dns.Server: Started DNS server on`
+	dnsCustomHandlerLine = `info: dns.CustomHandler: A:%s\.: Answering rcode=0`
 )
 
 type ResolverDialer struct {
@@ -46,6 +52,8 @@ func TestNetDNSResolution(t *testing.T) {
 		},
 	}
 
+	beforeOutput := kwtNet.CollectedOutput()
+
 	for _, dialer := range []ResolverDialer{tcpDialer, udpDialer} {
 		dialer := dialer
 
@@ -71,4 +79,33 @@ func TestNetDNSResolution(t *testing.T) {
 			}
 		})
 	}
+
+	afterOutput := kwtNet.CollectedOutput()
+
+	if !regexp.MustCompile(dnsServerStartLine).MatchString(beforeOutput) {
+		t.Fatalf("Expected to find dns start info line in output '%s'", afterOutput)
+	}
+
+	logger.Section("Check that command output shows DNS custom handler requests answered", func() {
+		lineRegexp := regexp.MustCompile(fmt.Sprintf(dnsCustomHandlerLine, regexp.QuoteMeta(guestbookAddrs.FrontendSvcDomain)))
+		checkDNSCustomHandlerOutput(t, lineRegexp, beforeOutput, afterOutput)
+	})
 }
+
+func checkDNSCustomHandlerOutput(t *testing.T, line *regexp.Regexp, beforeOutput, afterOutput string) {
+	if line.MatchString(beforeOutput) {
+		t.Fatalf("Expected to NOT find dns.CustomHandler info line in output '%s'", beforeOutput)
+	}
+	if !line.MatchString(afterOutput) {
+		t.Fatalf("Expected to find dns.CustomHandler info line in output '%s'", afterOutput)
+	}
+}
+
+/*
+
+Example output:
+
+04:50:10PM: info: dns.CustomHandler: A:frontend.default.svc.cluster.local.: Answering rcode=0 (4.921799ms)
+04:51:11PM: info: dns.CustomHandler: AAAA:frontend.default.svc.cluster.local.: Answering rcode=0 (33.162µs)
+
+*/
