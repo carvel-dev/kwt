@@ -1,8 +1,10 @@
 package net
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
+	"os/exec"
 	"strings"
 
 	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
@@ -59,6 +61,8 @@ func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctl
 			// instead of relying on standard OS X resolution libraries
 			ctlmdns.Domain: kubeIPResolver,
 		},
+
+		DomainsFunc: DomainsMapExecs{f.dnsFlags.MapExecs}.Get,
 	}
 
 	if len(opts.RecursorAddrs) == 0 {
@@ -88,10 +92,48 @@ func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctl
 			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to have valid IP '%s'", val)
 		}
 
-		opts.Domains[pieces[0]] = ctldns.NewStaticIPResolver(ip)
+		opts.Domains[pieces[0]] = ctldns.NewStaticIPsResolver([]net.IP{ip})
 	}
 
 	return opts, nil
+}
+
+type DomainsMapExecs struct {
+	cmds []string
+}
+
+func (e DomainsMapExecs) Get() (map[string]ctldns.IPResolver, error) {
+	domainToIPs := map[string][]string{}
+
+	for _, cmd := range e.cmds {
+		out, err := exec.Command("bash", "-c", cmd).Output()
+		if err != nil {
+			return nil, fmt.Errorf("Executing DNS map-exec '%s': %s", cmd, err)
+		}
+
+		err = json.Unmarshal(out, &domainToIPs)
+		if err != nil {
+			return nil, fmt.Errorf("Unmarshaling DNS map-exec '%s' output: %s", cmd, err)
+		}
+	}
+
+	domainToResolvers := map[string]ctldns.IPResolver{}
+
+	for domain, ipStrs := range domainToIPs {
+		var ips []net.IP
+
+		for _, ipStr := range ipStrs {
+			ip := net.ParseIP(ipStr)
+			if ip == nil {
+				return nil, fmt.Errorf("Unmarshaling DNS map-exec IP '%s'", ipStr)
+			}
+			ips = append(ips, ip)
+		}
+
+		domainToResolvers[domain] = ctldns.NewStaticIPsResolver(ips)
+	}
+
+	return domainToResolvers, nil
 }
 
 type ResolvConfDNSIPs struct {

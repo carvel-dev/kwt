@@ -10,6 +10,7 @@ type BuildOpts struct {
 	ListenAddrs   []string              // include port
 	RecursorAddrs []string              // include port
 	Domains       map[string]IPResolver // example "test."
+	DomainsFunc   DomainsFunc
 }
 
 func NewFactory() Factory { return Factory{} }
@@ -26,12 +27,15 @@ func (f Factory) Build(opts BuildOpts, logger Logger) (Server, error) {
 	mux.Handle("arpa.", arpaHandler)
 	mux.Handle(".", forwardHandler)
 
+	domainsMux := NewDomainsMux(mux, opts.DomainsFunc, logger)
+	go domainsMux.UpdateDomainsContiniously()
+
 	servers := []*dns.Server{}
 
 	for _, addr := range opts.ListenAddrs {
 		servers = append(servers,
-			&dns.Server{Addr: addr, Net: "tcp", Handler: mux},
-			&dns.Server{Addr: addr, Net: "udp", Handler: mux, UDPSize: 65535},
+			&dns.Server{Addr: addr, Net: "tcp", Handler: domainsMux},
+			&dns.Server{Addr: addr, Net: "udp", Handler: domainsMux, UDPSize: 65535},
 		)
 	}
 

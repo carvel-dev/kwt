@@ -21,6 +21,7 @@ sudo -E kwt net start
 ```
       --debug                    Set logging level to debug
       --dns-map strings          Domain to IP mapping (can be specified multiple times) (example: 'test.=127.0.0.1')
+      --dns-map-exec strings     Domain to IP mapping command to execute periodically (can be specified multiple times) (example: 'knctl dns-map')
       --dns-mdns                 Start MDNS server (default true)
   -r, --dns-recursor strings     Recursor (can be specified multiple times)
   -h, --help                     help for start
