@@ -83,12 +83,18 @@ func (o *CreateOptions) printInfo(workspace ctlwork.Workspace) {
 	table := uitable.Table{
 		Header: []uitable.Header{
 			uitable.NewHeader("Name"),
+			uitable.NewHeader("Image"),
+			uitable.NewHeader("Ports"),
+			uitable.NewHeader("Privileged"),
 		},
 
 		Transpose: true,
 
 		Rows: [][]uitable.Value{{
 			uitable.NewValueString(workspace.Name()),
+			uitable.NewValueString(workspace.Image()),
+			uitable.NewValueStrings(workspace.Ports()),
+			uitable.NewValueBool(workspace.Privileged()),
 		}},
 	}
 

@@ -22,6 +22,13 @@ var _ Workspace = &WorkspaceImpl{}
 
 func (w *WorkspaceImpl) Name() string { return w.pod.Name }
 
+func (w *WorkspaceImpl) Image() string {
+	for _, cont := range w.pod.Spec.Containers {
+		return cont.Image
+	}
+	return ""
+}
+
 func (w *WorkspaceImpl) Privileged() bool {
 	for _, cont := range w.pod.Spec.Containers {
 		if cont.SecurityContext != nil {
