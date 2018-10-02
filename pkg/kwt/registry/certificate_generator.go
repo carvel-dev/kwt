@@ -172,7 +172,7 @@ func generateCertTemplate(cParams CertParams) (x509.Certificate, error) {
 		NotBefore:             now,
 		NotAfter:              notAfter,
 		BasicConstraintsValid: true,
-		IsCA: cParams.IsCA,
+		IsCA:                  cParams.IsCA,
 	}
 	return template, nil
 }
