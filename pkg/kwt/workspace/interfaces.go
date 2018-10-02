@@ -9,6 +9,7 @@ import (
 type Workspace interface {
 	Name() string
 	Image() string
+	State() string
 	CreationTime() time.Time
 
 	Ports() []string

@@ -51,6 +51,7 @@ func (o *ListOptions) Run() error {
 			uitable.NewHeader("Alt names"),
 			uitable.NewHeader("Ports"),
 			uitable.NewHeader("Privileged"),
+			uitable.NewHeader("State"),
 			uitable.NewHeader("Last used"),
 			uitable.NewHeader("Age"),
 		},
@@ -66,6 +67,7 @@ func (o *ListOptions) Run() error {
 			cmdcore.NewValueStringsSingleLine(workspace.AltNames()),
 			cmdcore.NewValueStringsSingleLine(workspace.Ports()),
 			uitable.NewValueBool(workspace.Privileged()),
+			uitable.NewValueString(workspace.State()),
 			cmdcore.NewValueAge(workspace.LastUsedTime()),
 			cmdcore.NewValueAge(workspace.CreationTime()),
 		})

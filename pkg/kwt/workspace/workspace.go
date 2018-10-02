@@ -50,6 +50,13 @@ func (w *WorkspaceImpl) Ports() []string {
 	return result
 }
 
+func (w *WorkspaceImpl) State() string {
+	if w.pod.DeletionTimestamp != nil {
+		return "Terminating"
+	}
+	return string(w.pod.Status.Phase)
+}
+
 func (w *WorkspaceImpl) CreationTime() time.Time { return w.pod.CreationTimestamp.Time }
 
 func (w *WorkspaceImpl) WaitForStart(cancelCh chan struct{}) error {
