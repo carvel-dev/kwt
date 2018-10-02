@@ -108,6 +108,12 @@ Start networking access, and configure `example.com` or anything under it (such 
 sudo -E kwt net start --dns-map example.com=127.0.0.1
 ```
 
+Start networking access, and pick up DNS configuration by executing specified command. Command output should follow this format: `{"my-domain.test":["35.184.47.142"]}`
+
+```bash
+sudo -E kwt net start --dns-map-exec='knctl dns-map'
+```
+
 Show services in the current/specified namespace
 
 ```bash
