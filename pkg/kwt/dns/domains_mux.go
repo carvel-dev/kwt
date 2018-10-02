@@ -43,13 +43,20 @@ func (m *DomainsMux) updateDomainsOnce() error {
 		return err
 	}
 
+	m.logger.Debug(m.logTag, "Updating DNS domain handlers: %v", domains)
+
 	for domain, resolver := range domains {
-		delete(m.prevDomains, domain)
+		if _, found := m.prevDomains[domain]; found {
+			delete(m.prevDomains, domain)
+		} else {
+			m.logger.Info(m.logTag, "Registering %s->%s", domain, resolver)
+		}
 		m.mux.Handle(domain, NewCustomHandler(resolver, m.logger))
 	}
 
 	// Delete previously registered handlers that were not replaced
 	for domain, _ := range m.prevDomains {
+		m.logger.Info(m.logTag, "Unregistering %s", domain)
 		m.mux.HandleRemove(domain)
 	}
 
