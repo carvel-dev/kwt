@@ -7,10 +7,11 @@ import (
 type Factory struct{}
 
 type BuildOpts struct {
-	ListenAddrs   []string              // include port
-	RecursorAddrs []string              // include port
-	Domains       map[string]IPResolver // example "test."
-	DomainsFunc   DomainsFunc
+	ListenAddrs   []string // include port
+	RecursorAddrs []string // include port
+
+	DomainsMapFunc     DomainsMapFunc
+	DomainsChangedFunc DomainsChangedFunc
 }
 
 func NewFactory() Factory { return Factory{} }
@@ -21,14 +22,17 @@ func (f Factory) Build(opts BuildOpts, logger Logger) (Server, error) {
 	arpaHandler := NewArpaHandler(forwardHandler, logger)
 
 	mux := dns.NewServeMux()
-	for domain, resolver := range opts.Domains {
-		mux.Handle(dns.Fqdn(domain), NewCustomHandler(resolver, logger))
-	}
 	mux.Handle("arpa.", arpaHandler)
 	mux.Handle(".", forwardHandler)
 
-	domainsMux := NewDomainsMux(mux, opts.DomainsFunc, logger)
-	go domainsMux.UpdateDomainsContiniously()
+	domainsMux := NewDomainsMux(mux, opts.DomainsMapFunc, opts.DomainsChangedFunc, logger)
+
+	err := domainsMux.UpdateOnce()
+	if err != nil {
+		return Server{}, err
+	}
+
+	go domainsMux.UpdateContiniously()
 
 	servers := []*dns.Server{}
 

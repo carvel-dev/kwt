@@ -86,6 +86,8 @@ func (o *ForwardingProxy) Serve(dstConnFactory dstconn.Factory, subnets []net.IP
 			return
 		}
 
+		o.dnsServerFactory.NewDNSOSCache().Flush()
+
 		o.logger.Info(o.logTag, "Ready!")
 	}()
 

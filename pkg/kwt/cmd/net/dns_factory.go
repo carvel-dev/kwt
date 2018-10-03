@@ -37,6 +37,8 @@ func (f DNSServerFactory) NewDNSServer(dstConnFactory dstconn.Factory) (ctlnet.D
 		return nil, err
 	}
 
+	opts.DomainsChangedFunc = ctlnet.NewDNSOSCache(f.logger).Flush
+
 	server, err := ctldns.NewFactory().Build(opts, f.logger)
 	if err != nil {
 		return nil, fmt.Errorf("Building server: %s", err)
@@ -50,19 +52,48 @@ func (f DNSServerFactory) NewDNSServer(dstConnFactory dstconn.Factory) (ctlnet.D
 	return server, nil
 }
 
+func (f DNSServerFactory) NewDNSOSCache() ctlnet.DNSOSCache {
+	return ctlnet.NewDNSOSCache(f.logger)
+}
+
 func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctldns.BuildOpts, error) {
+	domainsMap := map[string]ctldns.IPResolver{}
+
+	for _, val := range f.dnsFlags.Map {
+		pieces := strings.SplitN(val, "=", 2)
+		if len(pieces) != 2 {
+			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to be in format 'domain=ip' but was '%s'", val)
+		}
+
+		ip := net.ParseIP(pieces[1])
+		if ip == nil {
+			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to have valid IP '%s'", val)
+		}
+
+		domainsMap[pieces[0]] = ctldns.NewStaticIPsResolver([]net.IP{ip})
+	}
+
 	opts := ctldns.BuildOpts{
 		ListenAddrs:   []string{"localhost:0"},
 		RecursorAddrs: f.dnsFlags.Recursors,
 
-		Domains: map[string]ctldns.IPResolver{
+		DomainsMapFunc: func() (map[string]ctldns.IPResolver, error) {
+			result, err := DomainsMapExecs{f.dnsFlags.MapExecs}.Get()
+			if err != nil {
+				return result, err
+			}
+
+			for domain, resolver := range domainsMap {
+				result[domain] = resolver
+			}
+
 			// Add mdns domain to regular resolver since some programs
 			// may just use /etc/resolv.conf for DNS resolution on OS X (eg dig)
 			// instead of relying on standard OS X resolution libraries
-			ctlmdns.Domain: kubeIPResolver,
-		},
+			result[ctlmdns.Domain] = kubeIPResolver
 
-		DomainsFunc: DomainsMapExecs{f.dnsFlags.MapExecs}.Get,
+			return result, nil
+		},
 	}
 
 	if len(opts.RecursorAddrs) == 0 {
@@ -79,20 +110,6 @@ func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctl
 		if len(opts.RecursorAddrs) == 0 {
 			opts.RecursorAddrs = []string{"8.8.8.8:53"}
 		}
-	}
-
-	for _, val := range f.dnsFlags.Map {
-		pieces := strings.SplitN(val, "=", 2)
-		if len(pieces) != 2 {
-			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to be in format 'domain=ip' but was '%s'", val)
-		}
-
-		ip := net.ParseIP(pieces[1])
-		if ip == nil {
-			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to have valid IP '%s'", val)
-		}
-
-		opts.Domains[pieces[0]] = ctldns.NewStaticIPsResolver([]net.IP{ip})
 	}
 
 	return opts, nil

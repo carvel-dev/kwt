@@ -21,6 +21,7 @@ type DNSIPs interface {
 
 type DNSServerFactory interface {
 	NewDNSServer(dstconn.Factory) (DNSServer, error)
+	NewDNSOSCache() DNSOSCache
 }
 
 type DNSServer interface {

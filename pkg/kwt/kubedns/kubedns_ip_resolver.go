@@ -29,6 +29,8 @@ func NewKubeDNSIPResolver(coreClient kubernetes.Interface) KubeDNSIPResolver {
 	return KubeDNSIPResolver{coreClient}
 }
 
+func (r KubeDNSIPResolver) String() string { return "kube-dns" }
+
 func (r KubeDNSIPResolver) ResolveIPv4(question string) ([]net.IP, bool, error) {
 	if !strings.HasSuffix(question, clusterSuffix) {
 		return nil, false, nil
