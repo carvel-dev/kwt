@@ -7,8 +7,13 @@ import (
 )
 
 type EntryPoint interface {
-	EntryPoint() (dstconn.SSHClientConnOpts, error)
+	EntryPoint() (EntryPointSession, error)
 	Delete() error
+}
+
+type EntryPointSession interface {
+	Opts() dstconn.SSHClientConnOpts
+	Close() error
 }
 
 type Subnets interface {

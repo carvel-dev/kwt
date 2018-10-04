@@ -56,7 +56,8 @@ func (f *RemotingProxy) Shutdown() error {
 }
 
 type ReconnSSHClient struct {
-	entryPoint EntryPoint
+	entryPoint     EntryPoint
+	entryPointSess EntryPointSession
 
 	sshClient     *dstconn.SSHClient
 	sshClientLock sync.RWMutex
@@ -146,12 +147,12 @@ func (f *ReconnSSHClient) connect() (*dstconn.SSHClient, error) {
 
 	f.logger.Debug(f.logTag, "Trying to reconnect SSH client")
 
-	sshConnOpts, err := f.entryPoint.EntryPoint()
+	sess, err := f.entryPoint.EntryPoint()
 	if err != nil {
 		return nil, err
 	}
 
-	sshClient := dstconn.NewSSHClient(sshConnOpts, f.logger)
+	sshClient := dstconn.NewSSHClient(sess.Opts(), f.logger)
 
 	err = sshClient.Connect()
 	if err != nil {
@@ -160,6 +161,7 @@ func (f *ReconnSSHClient) connect() (*dstconn.SSHClient, error) {
 
 	f.logger.Debug(f.logTag, "Reconnected SSH client")
 	f.sshClient = sshClient
+	f.entryPointSess = sess
 
 	return f.sshClient, nil
 }
@@ -168,11 +170,16 @@ func (f *ReconnSSHClient) disconnect() error {
 	f.sshClientLock.Lock()
 	defer f.sshClientLock.Unlock()
 
+	var err error
+
 	if f.sshClient != nil {
-		err := f.sshClient.Disconnect()
+		err = f.sshClient.Disconnect()
 		f.sshClient = nil
-		return err
 	}
 
-	return nil
+	if f.entryPointSess != nil {
+		f.entryPointSess.Close()
+	}
+
+	return err
 }

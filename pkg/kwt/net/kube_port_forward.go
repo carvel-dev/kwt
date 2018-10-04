@@ -21,6 +21,10 @@ type KubePortForward struct {
 	coreClient kubernetes.Interface
 	restConfig *rest.Config
 
+	outBuf *bytes.Buffer
+	errBuf *bytes.Buffer
+	stopCh chan struct{}
+
 	logTag string
 	logger Logger
 }
@@ -31,10 +35,21 @@ func NewKubePortForward(
 	restConfig *rest.Config,
 	logger Logger,
 ) *KubePortForward {
-	return &KubePortForward{pod, coreClient, restConfig, "KubePortForward", logger}
+	return &KubePortForward{
+		pod:        pod,
+		coreClient: coreClient,
+		restConfig: restConfig,
+
+		outBuf: bytes.NewBufferString(""),
+		errBuf: bytes.NewBufferString(""),
+		stopCh: make(chan struct{}),
+
+		logTag: "KubePortForward",
+		logger: logger,
+	}
 }
 
-func (f KubePortForward) Start(remotePort int) (int, error) {
+func (f KubePortForward) Start(remotePort int, startedCh chan struct{}) error {
 	req := f.coreClient.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Namespace(f.pod.Namespace).
@@ -43,30 +58,29 @@ func (f KubePortForward) Start(remotePort int) (int, error) {
 
 	transport, upgrader, err := spdy.RoundTripperFor(f.restConfig)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	dialer := spdy.NewDialer(upgrader, &http.Client{Transport: transport}, "POST", req.URL())
-	stopCh := make(<-chan struct{})
-	readyCh := make(chan struct{})
-	var outBuf bytes.Buffer
-	var errBuf bytes.Buffer
 
-	fw, err := portforward.New(dialer, []string{"0:" + strconv.Itoa(remotePort)}, stopCh, readyCh, &outBuf, &errBuf)
+	fw, err := portforward.New(dialer, []string{"0:" + strconv.Itoa(remotePort)}, f.stopCh, startedCh, f.outBuf, f.errBuf)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	go func() {
-		f.logger.Debug(f.logTag, "Starting port forwarding")
-		err := fw.ForwardPorts()
-		f.logger.Debug(f.logTag, "Finished port forwarding (err: %s)", err)
-	}()
+	f.logger.Debug(f.logTag, "Starting port forwarding")
 
-	<-readyCh
+	err = fw.ForwardPorts()
 
-	outBufResult := outBuf.String()
-	errBufResult := errBuf.String()
+	f.logger.Debug(f.logTag, "Finished port forwarding (err: %s)", err)
+
+	return err
+}
+
+// LocalPort should only be called once and after port forwarding is ready
+func (f KubePortForward) LocalPort() (int, error) {
+	outBufResult := f.outBuf.String()
+	errBufResult := f.errBuf.String()
 
 	matches := localEphPortRegexp.FindStringSubmatch(outBufResult)
 	if len(matches) != 2 {
@@ -81,7 +95,10 @@ func (f KubePortForward) Start(remotePort int) (int, error) {
 	f.logger.Debug(f.logTag, "out: %s", outBufResult)
 	f.logger.Debug(f.logTag, "err: %s", errBufResult)
 
-	// TODO clean up stop
-
 	return localPort, nil
+}
+
+func (f KubePortForward) Shutdown() error {
+	close(f.stopCh)
+	return nil
 }

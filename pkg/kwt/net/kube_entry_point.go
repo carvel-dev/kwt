@@ -53,9 +53,7 @@ func NewKubeEntryPoint(coreClient kubernetes.Interface, restConfig *rest.Config,
 	}
 }
 
-func (f KubeEntryPoint) EntryPoint() (dstconn.SSHClientConnOpts, error) {
-	opts := dstconn.SSHClientConnOpts{}
-
+func (f KubeEntryPoint) EntryPoint() (EntryPointSession, error) {
 	var clientPrivateKeyPEM, hostPublicKeyAuf string
 	sshKeysErrCh := make(chan error)
 
@@ -78,7 +76,7 @@ func (f KubeEntryPoint) EntryPoint() (dstconn.SSHClientConnOpts, error) {
 	for i := 0; i < 2; i++ {
 		err := <-sshKeysErrCh
 		if err != nil {
-			return opts, err
+			return nil, err
 		}
 	}
 
@@ -86,22 +84,40 @@ func (f KubeEntryPoint) EntryPoint() (dstconn.SSHClientConnOpts, error) {
 
 	pod, err := f.createNetPod()
 	if err != nil {
-		return opts, err
+		return nil, err
 	}
 
 	f.logger.Info(f.logTag, "Waiting for networking pod '%s' in namespace '%s' to start...", f.podName, f.namespace)
 
 	ready, err := f.waitForPod(pod)
 	if err != nil {
-		return opts, err
+		return nil, err
 	}
 
 	if ready {
 		pf := NewKubePortForward(pod, f.coreClient, f.restConfig, f.logger)
 
-		localPort, err := pf.Start(f.podPort)
+		startedCh := make(chan struct{})
+		errCh := make(chan error, 1)
+
+		go func() {
+			err := pf.Start(f.podPort, startedCh)
+			if err != nil {
+				f.logger.Error(f.logTag, "Failed starting kube port forwarding: %s", err)
+			}
+			errCh <- err
+		}()
+
+		select {
+		case <-startedCh:
+			// do nothing
+		case <-errCh:
+			return nil, fmt.Errorf("Starting kube port forwarding: %s", err)
+		}
+
+		localPort, err := pf.LocalPort()
 		if err != nil {
-			return opts, fmt.Errorf("Starting kube port forwarding: %s", err)
+			return nil, fmt.Errorf("Obtaining kube port forwarding local port: %s", err)
 		}
 
 		opts := dstconn.SSHClientConnOpts{
@@ -111,10 +127,10 @@ func (f KubeEntryPoint) EntryPoint() (dstconn.SSHClientConnOpts, error) {
 			HostPublicKeyAuf: hostPublicKeyAuf,
 		}
 
-		return opts, nil
+		return KubeEntryPointSession{pf, opts}, nil
 	}
 
-	return opts, fmt.Errorf("Network pod failed to start")
+	return nil, fmt.Errorf("Network pod failed to start")
 }
 
 func (f KubeEntryPoint) Delete() error {
@@ -410,3 +426,13 @@ func (f KubeEntryPoint) waitForObjDeletion(objDesc string, tryFunc func() error)
 		time.Sleep(1 * time.Second)
 	}
 }
+
+type KubeEntryPointSession struct {
+	pf   *KubePortForward
+	opts dstconn.SSHClientConnOpts
+}
+
+var _ EntryPointSession = KubeEntryPointSession{}
+
+func (s KubeEntryPointSession) Opts() dstconn.SSHClientConnOpts { return s.opts }
+func (s KubeEntryPointSession) Close() error                    { return s.pf.Shutdown() }

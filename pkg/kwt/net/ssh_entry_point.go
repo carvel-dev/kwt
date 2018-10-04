@@ -14,8 +14,17 @@ func NewSSHEntryPoint(opts dstconn.SSHClientConnOpts) SSHEntryPoint {
 	return SSHEntryPoint{opts}
 }
 
-func (f SSHEntryPoint) EntryPoint() (dstconn.SSHClientConnOpts, error) {
-	return f.opts, nil
+func (f SSHEntryPoint) EntryPoint() (EntryPointSession, error) {
+	return SSHEntryPointSession{f.opts}, nil
 }
 
 func (f SSHEntryPoint) Delete() error { return nil }
+
+type SSHEntryPointSession struct {
+	opts dstconn.SSHClientConnOpts
+}
+
+var _ EntryPointSession = SSHEntryPointSession{}
+
+func (s SSHEntryPointSession) Opts() dstconn.SSHClientConnOpts { return s.opts }
+func (s SSHEntryPointSession) Close() error                    { return nil }
