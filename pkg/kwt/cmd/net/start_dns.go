@@ -124,6 +124,8 @@ func (o *StartDNSOptions) Run() error {
 			return
 		}
 
+		dnsServerFactory.NewDNSOSCache().Flush()
+
 		logger.Info(logTag, "Ready!")
 	}()
 
