@@ -13,5 +13,5 @@ export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$PWD/gopath
 cd $GOPATH/src/github.com/cppforlife/kwt
 
-./hack/build.sh
+./hack/build-binaries.sh
 ./hack/test.sh
