@@ -3,8 +3,8 @@ package e2e
 import (
 	"os"
 	"strings"
-	"testing"
 	"syscall"
+	"testing"
 )
 
 type Env struct {

@@ -42,7 +42,7 @@ func NewStartDNSCmd(o *StartDNSOptions, flagsFactory cmdcore.FlagsFactory) *cobr
 
 func (o *StartDNSOptions) Run() error {
 	if syscall.Geteuid() != 0 {
-		return fmt.Errorf("Command must run under sudo to bind on port 53 and write to /etc/resolv.conf (sudo -E kwt net start ...)")
+		return fmt.Errorf("Command must run under sudo to change firewall settings (sudo -E kwt net start-dns ...)")
 	}
 
 	gidInt, err := setgid.GidExec{}.SetProcessGID()
