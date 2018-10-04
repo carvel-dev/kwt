@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"syscall"
 )
 
 type Env struct {
@@ -23,6 +24,10 @@ func (e Env) Validate(t *testing.T) {
 
 	if len(e.Namespace) == 0 {
 		errStrs = append(errStrs, "Expected Namespace to be non-empty")
+	}
+
+	if syscall.Geteuid() != 0 {
+		errStrs = append(errStrs, "Command must run under sudo to change firewall settings (run with `sudo -E`)")
 	}
 
 	if len(errStrs) > 0 {

@@ -71,7 +71,7 @@ func NewStartCmd(o *StartOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Comm
 
 func (o *StartOptions) Run() error {
 	if syscall.Geteuid() != 0 {
-		return fmt.Errorf("Command must run under sudo to change firewall settings")
+		return fmt.Errorf("Command must run under sudo to change firewall settings (sudo -E kwt net start ...)")
 	}
 
 	gidInt, err := setgid.GidExec{}.SetProcessGID()
