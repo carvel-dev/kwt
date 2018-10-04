@@ -57,7 +57,11 @@ func (f KubePortForward) Start(remotePort int) (int, error) {
 		return 0, err
 	}
 
-	go fw.ForwardPorts()
+	go func() {
+		f.logger.Debug(f.logTag, "Starting port forwarding")
+		err := fw.ForwardPorts()
+		f.logger.Debug(f.logTag, "Finished port forwarding (err: %s)", err)
+	}()
 
 	<-readyCh
 
