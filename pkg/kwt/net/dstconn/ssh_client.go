@@ -2,6 +2,7 @@ package dstconn
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"time"
 
@@ -79,7 +80,17 @@ func (c *SSHClient) Disconnect() error {
 
 func (c *SSHClient) NewConn(ip net.IP, port int) (net.Conn, error) {
 	addr := &net.TCPAddr{IP: ip, Port: port, Zone: ""}
-	return c.client.DialTCP("tcp", nil, addr)
+
+	conn, err := c.client.DialTCP("tcp", nil, addr)
+	if err != nil {
+		isEOF := err == io.EOF
+		_, isUnexpected := err.(gossh.UnexpectedPackerErr)
+		if isEOF || isUnexpected {
+			return nil, ConnectionBrokenErr{err}
+		}
+	}
+
+	return conn, err
 }
 
 func (c *SSHClient) NewConnCopier(proxyDesc string) ConnCopier {

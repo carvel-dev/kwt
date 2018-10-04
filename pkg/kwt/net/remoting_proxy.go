@@ -2,7 +2,6 @@ package net
 
 import (
 	"fmt"
-	"io"
 	"net"
 	"sync"
 
@@ -84,10 +83,11 @@ func (f *ReconnSSHClient) NewConn(ip net.IP, port int) (net.Conn, error) {
 
 	conn, err := client.NewConn(ip, port)
 	if err != nil {
-		isEOF := err == io.EOF
-		f.logger.Debug(f.logTag, "Received err: %s (isEOF: %t)", err, isEOF)
+		_, needsReconnect := err.(dstconn.ConnectionBrokenErr)
 
-		if isEOF {
+		f.logger.Debug(f.logTag, "Received err: %s (needsReconnect: %t)", err, needsReconnect)
+
+		if needsReconnect {
 			f.disconnect()
 
 			client, err := f.connect()

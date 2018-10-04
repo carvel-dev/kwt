@@ -14,3 +14,8 @@ type Factory interface {
 type ConnCopier interface {
 	CopyAndClose(dstConn net.Conn, srcConn net.Conn)
 }
+
+// ConnectionBrokenErr indicates that Factory needs to be recreated
+type ConnectionBrokenErr struct {
+	error
+}

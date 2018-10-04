@@ -303,6 +303,14 @@ func (m *mux) OpenChannel(chanType string, extra []byte) (Channel, <-chan *Reque
 	return ch, ch.incomingRequests, nil
 }
 
+type UnexpectedPackerErr struct {
+	msg interface{}
+}
+
+func (e UnexpectedPackerErr) Error() string {
+	return fmt.Sprintf("ssh: unexpected packet in response to channel open: %T", e.msg)
+}
+
 func (m *mux) openChannel(chanType string, extra []byte) (*channel, error) {
 	ch := m.newChannel(chanType, channelOutbound, extra)
 
@@ -325,6 +333,6 @@ func (m *mux) openChannel(chanType string, extra []byte) (*channel, error) {
 	case *channelOpenFailureMsg:
 		return nil, &OpenChannelError{msg.Reason, msg.Message}
 	default:
-		return nil, fmt.Errorf("ssh: unexpected packet in response to channel open: %T", msg)
+		return nil, UnexpectedPackerErr{msg}
 	}
 }

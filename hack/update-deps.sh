@@ -8,3 +8,5 @@ rm -rf $(find vendor/ -name 'OWNERS')
 rm -rf $(find vendor/ -name '*_test.go')
 
 # TODO update licenses
+
+git apply hack/gossh.patch
