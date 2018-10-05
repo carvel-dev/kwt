@@ -1,36 +1,43 @@
-## kwt net start
+## kwt net listen
 
-Sets up network access
+Redirect incoming service traffic to a local port
 
 ### Synopsis
 
-Sets up network access
+Redirect incoming service traffic to a local port
 
 ```
-kwt net start [flags]
+kwt net listen [flags]
 ```
 
 ### Examples
 
 ```
-sudo -E kwt net start
+
+	# Create service 'svc1' and forward its port 80 to localhost:80
+	kwt net listen --service svc1
+
+	# Create service 'svc1' and forward its port 8080 to localhost:8081
+	kwt net listen -r 8080 -l localhost:8081 --service svc1
+
+	# TODO Create service and forward it to local listening process
+	kwt net l --service svc1 --local-process foo
+
 ```
 
 ### Options
 
 ```
       --debug                    Set logging level to debug
-      --dns-map strings          Domain to IP mapping (can be specified multiple times) (example: 'test.=127.0.0.1')
-      --dns-map-exec strings     Domain to IP mapping command to execute periodically (can be specified multiple times) (example: 'knctl dns-map')
-      --dns-mdns                 Start MDNS server (default true)
-  -r, --dns-recursor strings     Recursor (can be specified multiple times)
-  -h, --help                     help for start
-      --namespace string         Namespace to use to manage networking pod (default "default")
-      --remote-ip strings        Additional IP to include for subnet guessing (can be specified multiple times)
+  -h, --help                     help for listen
+  -l, --local string             Local address (example: 80, localhost:80) (default "localhost:80")
+  -n, --namespace string         Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
+  -r, --remote string            Remote address (example: 80) (default "80")
+  -s, --service string           Service to create or update for incoming traffic
+      --service-type string      Service type to set if creating service (default "ClusterIP")
       --ssh-host string          SSH server address for forwarding connections (includes port)
       --ssh-private-key string   Private key for connecting to SSH server (PEM format)
       --ssh-user string          SSH server username
-  -s, --subnet strings           Subnet, if specified subnets will not be guessed automatically (can be specified multiple times)
 ```
 
 ### Options inherited from parent commands

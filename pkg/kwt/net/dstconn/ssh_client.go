@@ -86,6 +86,12 @@ func (c *SSHClient) NewConnCopier(proxyDesc string) ConnCopier {
 	return NewSSHConnCopier(proxyDesc, c.logger)
 }
 
+func (c *SSHClient) NewListener() (net.Listener, error) {
+	// sshd must be configured with `GatewayPorts yes/clientspecified`
+	// otherwise it will be always be listening on loopback
+	return c.client.Listen("tcp", "0.0.0.0:0")
+}
+
 func (c *SSHClient) keepAlive() {
 	ticker := time.NewTicker(3 * time.Second)
 	defer ticker.Stop()

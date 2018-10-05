@@ -96,6 +96,7 @@ func NewKwtCmd(o *KwtOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Command 
 	netCmd.AddCommand(cmdnet.NewServicesCmd(cmdnet.NewServicesOptions(o.depsFactory, o.ui), flagsFactory))
 	netCmd.AddCommand(cmdnet.NewPodsCmd(cmdnet.NewPodsOptions(o.depsFactory, o.ui), flagsFactory))
 	netCmd.AddCommand(cmdnet.NewStartDNSCmd(cmdnet.NewStartDNSOptions(o.depsFactory, o.ui, cancelSignals), flagsFactory))
+	netCmd.AddCommand(cmdnet.NewListenCmd(cmdnet.NewListenOptions(o.depsFactory, o.configFactory, o.ui, cancelSignals), flagsFactory))
 	cmd.AddCommand(netCmd)
 
 	regCmd := cmdreg.NewRegistryCmd()

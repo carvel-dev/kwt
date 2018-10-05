@@ -16,7 +16,10 @@ import (
 )
 
 const (
-	sshSecretPublicKey = "ssh-publickey"
+	sshSecretPublicKey  = "ssh-publickey"
+	netPodSelectorKey   = "kwt.cppforlife.com/net"
+	netPodSelectorValue = "true"
+	sshUser             = "tom"
 )
 
 type KubeEntryPoint struct {
@@ -121,7 +124,7 @@ func (f KubeEntryPoint) EntryPoint() (EntryPointSession, error) {
 		}
 
 		opts := dstconn.SSHClientConnOpts{
-			User:             "tom",
+			User:             sshUser,
 			Host:             "localhost:" + strconv.Itoa(localPort),
 			PrivateKeyPEM:    clientPrivateKeyPEM,
 			HostPublicKeyAuf: hostPublicKeyAuf,
@@ -275,9 +278,10 @@ func (f KubeEntryPoint) createNetPod() (*corev1.Pod, error) {
 			"-c",
 			strings.Join([]string{
 				// TODO move to init container
-				`echo "$KWT_CLIENT_PUB_KEY" > ~/.ssh/authorized_keys`,
+				fmt.Sprintf(`echo "$KWT_CLIENT_PUB_KEY" > /home/%s/.ssh/authorized_keys`, sshUser),
 				`echo "$KWT_HOST_PRIV_KEY" > /etc/ssh/ssh_host_rsa_key`,
 				`echo "$KWT_HOST_PUB_KEY" > /etc/ssh/ssh_host_rsa_key.pub`,
+				`echo "GatewayPorts clientspecified" >> /etc/ssh/sshd_config`,
 				fmt.Sprintf("exec /usr/sbin/sshd -D -p %d", f.podPort),
 			}, " && "),
 		},
@@ -337,8 +341,12 @@ func (f KubeEntryPoint) createNetPod() (*corev1.Pod, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      f.podName,
 			Namespace: f.namespace,
+			Labels: map[string]string{
+				netPodSelectorKey: netPodSelectorValue,
+			},
 			Annotations: map[string]string{
 				"sidecar.istio.io/inject": "false", // just in case Istio is used
+				// TODO linkerd2?
 			},
 		},
 		Spec: corev1.PodSpec{

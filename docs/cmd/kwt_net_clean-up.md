@@ -32,5 +32,5 @@ kwt net clean-up [flags]
 
 ### SEE ALSO
 
-* [kwt net](kwt_net.md)	 - Network (clean-up, pods, services, start)
+* [kwt net](kwt_net.md)	 - Network (clean-up, listen, pods, services, start)
 

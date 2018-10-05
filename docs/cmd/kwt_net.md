@@ -1,10 +1,10 @@
 ## kwt net
 
-Network (clean-up, pods, services, start)
+Network (clean-up, listen, pods, services, start)
 
 ### Synopsis
 
-Network (clean-up, pods, services, start)
+Network (clean-up, listen, pods, services, start)
 
 ```
 kwt net [flags]
@@ -32,6 +32,7 @@ kwt net [flags]
 
 * [kwt](kwt.md)	 - kwt helps develop with your Kubernetes cluster (net, version, workspace)
 * [kwt net clean-up](kwt_net_clean-up.md)	 - Clean up network access
+* [kwt net listen](kwt_net_listen.md)	 - Redirect incoming service traffic to a local port
 * [kwt net pods](kwt_net_pods.md)	 - List all pods
 * [kwt net services](kwt_net_services.md)	 - List all services
 * [kwt net start](kwt_net_start.md)	 - Sets up network access

@@ -113,6 +113,15 @@ func (f *ReconnSSHClient) NewConnCopier(proxyDesc string) dstconn.ConnCopier {
 	return client.NewConnCopier(proxyDesc)
 }
 
+func (f *ReconnSSHClient) NewListener() (net.Listener, error) {
+	client, err := f.getSSHClient()
+	if err != nil {
+		return nil, err
+	}
+
+	return client.NewListener()
+}
+
 func (f *ReconnSSHClient) Connect() error {
 	_ = f.disconnect()
 	_, err := f.connect()

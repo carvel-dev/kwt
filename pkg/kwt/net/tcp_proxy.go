@@ -2,6 +2,7 @@ package net
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"time"
 
@@ -34,12 +35,16 @@ func NewTCPProxy(
 }
 
 func (c *TCPProxy) Serve(startedCh chan struct{}) error {
-	var err error
-
-	c.listener, err = net.Listen("tcp", "localhost:0")
+	listener, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
 		return err
 	}
+
+	return c.ServeListener(listener, startedCh)
+}
+
+func (c *TCPProxy) ServeListener(listener net.Listener, startedCh chan struct{}) error {
+	c.listener = listener
 
 	defer c.listener.Close()
 
@@ -50,6 +55,9 @@ func (c *TCPProxy) Serve(startedCh chan struct{}) error {
 	for {
 		conn, err := c.listener.Accept()
 		if err != nil {
+			if err == io.EOF { // listener was closed
+				return nil
+			}
 			return err
 		}
 		t1 := time.Now()
@@ -61,6 +69,9 @@ func (c *TCPProxy) Addr() net.Addr { return c.listener.Addr() }
 
 func (c *TCPProxy) Shutdown() error {
 	// TODO drain connections?
+	if c.listener != nil {
+		c.listener.Close()
+	}
 	return nil
 }
 

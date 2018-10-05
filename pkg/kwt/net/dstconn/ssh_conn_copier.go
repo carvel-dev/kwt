@@ -17,7 +17,7 @@ type sshConnSrc interface {
 	io.Reader
 	io.Writer
 	CloseWrite() error
-	CloseRead() error
+	// CloseRead() error // see below
 	Close() error
 }
 
@@ -47,7 +47,9 @@ func (c SSHConnCopier) CopyAndClose(dstConn, srcConn net.Conn) {
 
 	err := srcConn.Close()
 	if err != nil {
-		c.logger.Error(c.logTag, "Failed to close src conn: %s", err)
+		if err != io.EOF {
+			c.logger.Error(c.logTag, "Failed to close src conn: %s", err)
+		}
 	}
 
 	err = dstConn.Close()
