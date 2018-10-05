@@ -23,13 +23,10 @@ type StartOptions struct {
 	NamespaceFlags NamespaceFlags
 	DNSFlags       DNSFlags
 	LoggingFlags   LoggingFlags
+	SSHFlags       SSHFlags
 
 	Subnets   []string
 	RemoteIPs []string
-
-	SSHUser       string
-	SSHHost       string
-	SSHPrivateKey string
 }
 
 func NewStartOptions(
@@ -58,13 +55,10 @@ func NewStartCmd(o *StartOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Comm
 	o.NamespaceFlags.Set(cmd)
 	o.DNSFlags.SetWithPrefix(cmd, "dns")
 	o.LoggingFlags.Set(cmd)
+	o.SSHFlags.Set(cmd)
 
 	cmd.Flags().StringSliceVarP(&o.Subnets, "subnet", "s", nil, "Subnet, if specified subnets will not be guessed automatically (can be specified multiple times)")
 	cmd.Flags().StringSliceVar(&o.RemoteIPs, "remote-ip", nil, "Additional IP to include for subnet guessing (can be specified multiple times)")
-
-	cmd.Flags().StringVar(&o.SSHUser, "ssh-user", "", "SSH server username")
-	cmd.Flags().StringVar(&o.SSHHost, "ssh-host", "", "SSH server address for forwarding connections (includes port)")
-	cmd.Flags().StringVar(&o.SSHPrivateKey, "ssh-private-key", "", "Private key for connecting to SSH server (PEM format)")
 
 	return cmd
 }
@@ -94,11 +88,11 @@ func (o *StartOptions) Run() error {
 
 	var entryPoint ctlnet.EntryPoint
 
-	if len(o.SSHPrivateKey) > 0 {
+	if len(o.SSHFlags.PrivateKey) > 0 {
 		entryPoint = ctlnet.NewSSHEntryPoint(dstconn.SSHClientConnOpts{
-			User:          o.SSHUser,
-			Host:          o.SSHHost,
-			PrivateKeyPEM: o.SSHPrivateKey,
+			User:          o.SSHFlags.User,
+			Host:          o.SSHFlags.Host,
+			PrivateKeyPEM: o.SSHFlags.PrivateKey,
 		})
 	} else {
 		entryPoint = ctlnet.NewKubeEntryPoint(coreClient, restConfig, o.NamespaceFlags.Name, logger)
