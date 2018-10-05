@@ -52,7 +52,8 @@ func (c *TCPProxy) Serve(startedCh chan struct{}) error {
 		if err != nil {
 			return err
 		}
-		go c.serveConn(conn)
+		t1 := time.Now()
+		go c.serveConn(conn, t1)
 	}
 }
 
@@ -63,9 +64,7 @@ func (c *TCPProxy) Shutdown() error {
 	return nil
 }
 
-func (c *TCPProxy) serveConn(srcConn net.Conn) {
-	t1 := time.Now()
-
+func (c *TCPProxy) serveConn(srcConn net.Conn, t1 time.Time) {
 	srcDesc := srcConn.RemoteAddr()
 	c.logger.Info(c.logTag, "Received %s", srcDesc)
 
