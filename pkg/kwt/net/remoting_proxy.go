@@ -83,22 +83,11 @@ func (f *ReconnSSHClient) NewConn(ip net.IP, port int) (net.Conn, error) {
 
 	conn, err := client.NewConn(ip, port)
 	if err != nil {
-		_, needsReconnect := err.(dstconn.ConnectionBrokenErr)
-
-		f.logger.Debug(f.logTag, "Received err: %s (needsReconnect: %t)", err, needsReconnect)
-
-		if needsReconnect {
-			f.disconnect()
-
-			client, err := f.connect()
-			if err != nil {
-				return nil, err
-			}
-
-			return client.NewConn(ip, port)
+		client, err := f.reconnectIfNecessary(err)
+		if err != nil {
+			return nil, err
 		}
-
-		return nil, err
+		return client.NewConn(ip, port)
 	}
 
 	return conn, nil
@@ -119,7 +108,16 @@ func (f *ReconnSSHClient) NewListener() (net.Listener, error) {
 		return nil, err
 	}
 
-	return client.NewListener()
+	lis, err := client.NewListener()
+	if err != nil {
+		client, err := f.reconnectIfNecessary(err)
+		if err != nil {
+			return nil, err
+		}
+		return client.NewListener()
+	}
+
+	return lis, nil
 }
 
 func (f *ReconnSSHClient) Connect() error {
@@ -136,7 +134,7 @@ func (f *ReconnSSHClient) getSSHClient() (*dstconn.SSHClient, error) {
 	f.sshClientLock.RLock()
 
 	if f.sshClient != nil {
-		f.sshClientLock.RUnlock()
+		defer f.sshClientLock.RUnlock()
 		return f.sshClient, nil
 	}
 
@@ -191,4 +189,17 @@ func (f *ReconnSSHClient) disconnect() error {
 	}
 
 	return err
+}
+
+func (f *ReconnSSHClient) reconnectIfNecessary(err error) (*dstconn.SSHClient, error) {
+	_, needsReconnect := err.(dstconn.ConnectionBrokenErr)
+
+	f.logger.Debug(f.logTag, "Received err: %s (needsReconnect: %t)", err, needsReconnect)
+
+	if needsReconnect {
+		f.disconnect()
+		return f.connect()
+	}
+
+	return nil, err
 }

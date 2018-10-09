@@ -83,14 +83,10 @@ func (c *SSHClient) NewConn(ip net.IP, port int) (net.Conn, error) {
 
 	conn, err := c.client.DialTCP("tcp", nil, addr)
 	if err != nil {
-		isEOF := err == io.EOF
-		_, isUnexpected := err.(gossh.UnexpectedPackerErr)
-		if isEOF || isUnexpected {
-			return nil, ConnectionBrokenErr{err}
-		}
+		return nil, c.detectConnBrokenErr(err)
 	}
 
-	return conn, err
+	return conn, nil
 }
 
 func (c *SSHClient) NewConnCopier(proxyDesc string) ConnCopier {
@@ -100,7 +96,23 @@ func (c *SSHClient) NewConnCopier(proxyDesc string) ConnCopier {
 func (c *SSHClient) NewListener() (net.Listener, error) {
 	// sshd must be configured with `GatewayPorts yes/clientspecified`
 	// otherwise it will be always be listening on loopback
-	return c.client.Listen("tcp", "0.0.0.0:0")
+	lis, err := c.client.Listen("tcp", "0.0.0.0:0")
+	if err != nil {
+		return nil, c.detectConnBrokenErr(err)
+	}
+
+	return lis, nil
+}
+
+func (c *SSHClient) detectConnBrokenErr(err error) error {
+	isEOF := err == io.EOF
+	_, isUnexpected := err.(gossh.UnexpectedPackerErr)
+
+	if isEOF || isUnexpected {
+		return ConnectionBrokenErr{err}
+	}
+
+	return err
 }
 
 func (c *SSHClient) keepAlive() {

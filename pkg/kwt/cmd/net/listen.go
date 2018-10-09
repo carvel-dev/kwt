@@ -2,7 +2,9 @@ package net
 
 import (
 	"fmt"
+	"io"
 	"net"
+	"sync"
 
 	"github.com/cppforlife/go-cli-ui/ui"
 	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
@@ -115,7 +117,6 @@ func (o *ListenOptions) Run() error {
 
 	reconnSSHClient := ctlnet.NewReconnSSHClient(entryPoint, logger)
 
-	// Connect immediately starting proxies to catch any early failures
 	err = reconnSSHClient.Connect()
 	if err != nil {
 		return err
@@ -123,32 +124,12 @@ func (o *ListenOptions) Run() error {
 
 	defer reconnSSHClient.Disconnect()
 
-	// TODO restart listening on reconnect
-	listener, err := reconnSSHClient.NewListener()
-	if err != nil {
-		return err
-	}
-
-	defer listener.Close()
-
-	o.cancelSignals.Watch(func() {
-		logger.Info(logTag, "Shutting down")
-		listener.Close() // TODO use proxy.Shutdown()?
-	})
-
-	logger.Debug(logTag, "Remotely listening on %s", listener.Addr())
-
-	_, targetPort, err := net.SplitHostPort(listener.Addr().String())
-	if err != nil {
-		return fmt.Errorf("Extracting target port: %s", err)
-	}
-
 	service := ctlnet.NewKubeListenerService(
-		o.Service, corev1.ServiceType(o.ServiceType), o.NamespaceFlags.Name, coreClient, logger)
+		o.Service, corev1.ServiceType(o.ServiceType), o.NamespaceFlags.Name, o.RemoteAddr, coreClient, logger)
 
-	err = service.Redirect(o.RemoteAddr, targetPort)
+	err = service.Snapshot()
 	if err != nil {
-		return fmt.Errorf("Redirecting service: %s", err)
+		return fmt.Errorf("Snapshotting service: %s", err)
 	}
 
 	defer func() {
@@ -157,6 +138,15 @@ func (o *ListenOptions) Run() error {
 			logger.Error(logTag, "Failed reverting service redirection: %s", err)
 		}
 	}()
+
+	reconnListener := NewReconnListener(service, reconnSSHClient, logger)
+
+	defer reconnListener.Close()
+
+	o.cancelSignals.Watch(func() {
+		logger.Info(logTag, "Shutting down")
+		reconnListener.Close() // TODO use proxy.Shutdown()?
+	})
 
 	resolver := forwarder.NewStaticResolver(localAddr.IP, localAddr.Port)
 	proxy := ctlnet.NewTCPProxy(resolver, dstconn.NewLocal(logger), logger)
@@ -168,5 +158,133 @@ func (o *ListenOptions) Run() error {
 		logger.Info(logTag, "Ready!")
 	}()
 
-	return proxy.ServeListener(listener, startedCh)
+	return proxy.ServeListener(reconnListener, startedCh)
 }
+
+type ReconnListener struct {
+	service         *ctlnet.KubeListenerService
+	reconnSSHClient *ctlnet.ReconnSSHClient
+
+	listener     net.Listener
+	listenerLock sync.RWMutex
+	closedCh     chan struct{}
+
+	logger ctlnet.Logger
+	logTag string
+}
+
+var _ net.Listener = &ReconnListener{}
+
+func NewReconnListener(service *ctlnet.KubeListenerService, reconnSSHClient *ctlnet.ReconnSSHClient, logger ctlnet.Logger) *ReconnListener {
+	return &ReconnListener{
+		service:         service,
+		reconnSSHClient: reconnSSHClient,
+		closedCh:        make(chan struct{}),
+
+		logger: logger,
+		logTag: "ReconnListener",
+	}
+}
+
+func (lis *ReconnListener) Accept() (net.Conn, error) {
+	for {
+		listener, err := lis.getListener()
+		if err != nil {
+			return nil, err
+		}
+
+		conn, err := listener.Accept()
+		if err != nil {
+			if err == io.EOF { // listener was closed
+				select {
+				case <-lis.closedCh:
+					return nil, io.EOF
+				default:
+					lis.disconnect()
+					continue
+				}
+			}
+			return nil, err
+		}
+
+		return conn, nil
+	}
+}
+
+func (lis *ReconnListener) Close() error {
+	select {
+	case <-lis.closedCh:
+		// already closed
+	default:
+		close(lis.closedCh)
+	}
+
+	return lis.disconnect()
+}
+
+func (lis *ReconnListener) Addr() net.Addr {
+	if lis.listener != nil {
+		return lis.listener.Addr()
+	}
+	return dummyAddr{} // TODO better address
+}
+
+func (lis *ReconnListener) getListener() (net.Listener, error) {
+	lis.listenerLock.RLock()
+
+	if lis.listener != nil {
+		defer lis.listenerLock.RUnlock()
+		return lis.listener, nil
+	}
+
+	lis.listenerLock.RUnlock()
+
+	return lis.connect()
+}
+
+func (lis *ReconnListener) connect() (net.Listener, error) {
+	lis.listenerLock.Lock()
+	defer lis.listenerLock.Unlock()
+
+	var err error
+
+	lis.listener, err = lis.reconnSSHClient.NewListener()
+	if err != nil {
+		return nil, err
+	}
+
+	lis.logger.Debug(lis.logTag, "Remotely listening on %s", lis.listener.Addr())
+
+	_, targetPort, err := net.SplitHostPort(lis.listener.Addr().String())
+	if err != nil {
+		return nil, fmt.Errorf("Extracting target port: %s", err)
+	}
+
+	err = lis.service.Redirect(targetPort)
+	if err != nil {
+		return nil, fmt.Errorf("Redirecting service: %s", err)
+	}
+
+	return lis.listener, nil
+}
+
+func (lis *ReconnListener) disconnect() error {
+	lis.listenerLock.Lock()
+	defer lis.listenerLock.Unlock()
+
+	var err error
+
+	if lis.listener != nil {
+		err = lis.listener.Close()
+		lis.listener = nil
+	}
+
+	return err
+}
+
+type dummyAddr struct{}
+
+var _ net.Addr = dummyAddr{}
+
+func (dummyAddr) Network() string { return "" }
+func (dummyAddr) String() string  { return "dummy-addr" }

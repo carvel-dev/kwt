@@ -15,10 +15,11 @@ type KubeListenerService struct {
 	serviceName   string
 	serviceType   corev1.ServiceType
 	namespaceName string
+	portStr       string
 	coreClient    kubernetes.Interface
 
 	redirected   bool
-	newService   bool
+	created      bool
 	originalSpec *corev1.ServiceSpec
 
 	logTag string
@@ -27,12 +28,13 @@ type KubeListenerService struct {
 
 func NewKubeListenerService(
 	svcName string, svcType corev1.ServiceType, nsName string,
-	coreClient kubernetes.Interface, logger Logger) *KubeListenerService {
+	portStr string, coreClient kubernetes.Interface, logger Logger) *KubeListenerService {
 
 	return &KubeListenerService{
 		serviceName:   svcName,
 		serviceType:   svcType,
 		namespaceName: nsName,
+		portStr:       portStr,
 		coreClient:    coreClient,
 
 		logTag: "KubeListenerService",
@@ -40,26 +42,38 @@ func NewKubeListenerService(
 	}
 }
 
-func (s *KubeListenerService) Redirect(portStr, targetPort string) error {
+func (s *KubeListenerService) Snapshot() error {
 	if len(s.namespaceName) == 0 {
 		return fmt.Errorf("Expected non-empty namespace name")
-	}
-
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return fmt.Errorf("Converting port string '%s' to int: %s", portStr, err)
 	}
 
 	service, err := s.coreClient.CoreV1().Services(s.namespaceName).Get(s.serviceName, metav1.GetOptions{})
 	if err != nil {
 		if errors.IsNotFound(err) {
-			s.newService = true
-		} else {
+			return nil // nothing to snapshot
+		}
+		return err
+	}
+
+	s.originalSpec = service.Spec.DeepCopy()
+
+	return nil
+}
+
+func (s *KubeListenerService) Redirect(targetPort string) error {
+	port, err := strconv.Atoi(s.portStr)
+	if err != nil {
+		return fmt.Errorf("Converting port string '%s' to int: %s", s.portStr, err)
+	}
+
+	service, err := s.coreClient.CoreV1().Services(s.namespaceName).Get(s.serviceName, metav1.GetOptions{})
+	if err != nil {
+		if !errors.IsNotFound(err) {
 			return err
 		}
 	}
 
-	if s.newService {
+	if len(service.UID) == 0 {
 		service = &corev1.Service{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      s.serviceName,
@@ -71,7 +85,6 @@ func (s *KubeListenerService) Redirect(portStr, targetPort string) error {
 			},
 		}
 	} else {
-		s.originalSpec = service.Spec.DeepCopy()
 		service.Spec.Ports = []corev1.ServicePort{}
 	}
 
@@ -85,11 +98,13 @@ func (s *KubeListenerService) Redirect(portStr, targetPort string) error {
 
 	service.Spec.Selector = map[string]string{netPodSelectorKey: netPodSelectorValue}
 
-	if s.newService {
+	if len(service.UID) == 0 {
 		_, err = s.coreClient.CoreV1().Services(s.namespaceName).Create(service)
 		if err != nil {
 			return fmt.Errorf("Creating service: %s", err)
 		}
+
+		s.created = true
 	} else {
 		_, err = s.coreClient.CoreV1().Services(s.namespaceName).Update(service)
 		if err != nil {
@@ -107,7 +122,7 @@ func (s *KubeListenerService) Revert() error {
 		return nil
 	}
 
-	if s.newService {
+	if s.created {
 		err := s.coreClient.CoreV1().Services(s.namespaceName).Delete(s.serviceName, &metav1.DeleteOptions{})
 		if err != nil {
 			return fmt.Errorf("Deleting service: %s", err)
