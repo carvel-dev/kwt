@@ -52,7 +52,7 @@ func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
 			Name: workspaceContainerName,
 
 			Image:           opts.Image,
-			ImagePullPolicy: corev1.PullAlways,
+			ImagePullPolicy: corev1.PullIfNotPresent,
 
 			Command: opts.Command,
 			Args:    opts.CommandArgs,
@@ -62,7 +62,7 @@ func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
 			Name: workspaceContainerName,
 
 			Image:           "ubuntu:xenial",
-			ImagePullPolicy: corev1.PullAlways,
+			ImagePullPolicy: corev1.PullIfNotPresent,
 
 			Command: []string{"/bin/bash"},
 			Args:    []string{"-c", "while true; do sleep 86400; done"}, // sleep forever
