@@ -60,9 +60,13 @@ func (w *WorkspaceImpl) State() string {
 func (w *WorkspaceImpl) CreationTime() time.Time { return w.pod.CreationTimestamp.Time }
 
 func (w *WorkspaceImpl) WaitForStart(cancelCh chan struct{}) error {
-	_, err := PodStartWaiter{w.pod, w.coreClient}.WaitForStart(cancelCh)
+	phase, err := PodStartWaiter{w.pod, w.coreClient}.WaitForStart(cancelCh)
 	if err != nil {
 		return fmt.Errorf("Waiting for pod to start: %s", err)
+	}
+
+	if phase != corev1.PodRunning {
+		return fmt.Errorf("Expected pod phase to be running but was %s (most likely containers terminated)", phase)
 	}
 
 	return nil
