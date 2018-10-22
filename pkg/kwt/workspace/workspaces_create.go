@@ -21,6 +21,8 @@ type CreateOpts struct {
 	Privileged  bool
 
 	Ports []int
+
+	ServiceAccountName string
 }
 
 func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
@@ -43,7 +45,8 @@ func (w Workspaces) Create(opts CreateOpts) (Workspace, error) {
 			// (once enabled can access filesystem as well: /proc/$pid/root)
 			// TODO ShareProcessNamespace: &trueBool,
 
-			Containers: []corev1.Container{{}},
+			Containers:         []corev1.Container{{}},
+			ServiceAccountName: opts.ServiceAccountName,
 		},
 	}
 

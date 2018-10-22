@@ -28,6 +28,7 @@ kwt workspace create [flags]
       --port ints                   Set port (multiple can be specified)
   -p, --privileged                  Set privilged
       --rm                          Remove workspace after execution is finished
+      --service-account string      Set service account (could be used for pulling private images)
       --watch                       Watch and continiously sync inputs
   -w, --workspace string            Specified workspace (default "w")
 ```
