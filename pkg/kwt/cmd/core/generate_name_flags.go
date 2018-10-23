@@ -10,11 +10,7 @@ type GenerateNameFlags struct {
 }
 
 func (s *GenerateNameFlags) Set(cmd *cobra.Command, flagsFactory FlagsFactory) {
-	s.SetWithDefault(false, cmd, flagsFactory)
-}
-
-func (s *GenerateNameFlags) SetWithDefault(def bool, cmd *cobra.Command, flagsFactory FlagsFactory) {
-	cmd.Flags().BoolVar(&s.GenerateName, "generate-name", def, "Set to generate name")
+	cmd.Flags().BoolVar(&s.GenerateName, "generate-name", false, "Set to generate name")
 }
 
 func (s *GenerateNameFlags) Apply(meta metav1.ObjectMeta) metav1.ObjectMeta {

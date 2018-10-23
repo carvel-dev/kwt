@@ -15,7 +15,7 @@ type CreateFlags struct {
 }
 
 func (s *CreateFlags) Set(cmd *cobra.Command, flagsFactory cmdcore.FlagsFactory) {
-	s.GenerateNameFlags.SetWithDefault(true, cmd, flagsFactory)
+	s.GenerateNameFlags.Set(cmd, flagsFactory)
 
 	cmd.Flags().StringVar(&s.Image, "image", "", "Set image (example: nginx)")
 	cmd.Flags().StringSliceVar(&s.Command, "image-command", nil, "Set command (can be set multiple times)")

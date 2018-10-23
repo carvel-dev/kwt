@@ -38,15 +38,21 @@ func NewCreateCmd(o *CreateOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Co
 }
 
 func (o *CreateOptions) Run() error {
+	// Generate unique name if no name has been provided
+	if len(o.WorkspaceFlags.Name) == 0 {
+		o.CreateFlags.CreateOpts.Name = "w"
+		o.CreateFlags.CreateOpts.GenerateName = true
+	} else {
+		o.CreateFlags.CreateOpts.Name = o.WorkspaceFlags.Name
+		o.CreateFlags.CreateOpts.GenerateName = o.CreateFlags.GenerateNameFlags.GenerateName
+	}
+
 	coreClient, err := o.depsFactory.CoreClient()
 	if err != nil {
 		return err
 	}
 
 	ws := ctlwork.NewWorkspaces(o.WorkspaceFlags.NamespaceFlags.Name, coreClient)
-
-	o.CreateFlags.CreateOpts.Name = o.WorkspaceFlags.Name
-	o.CreateFlags.CreateOpts.GenerateName = o.CreateFlags.GenerateNameFlags.GenerateName
 
 	workspace, err := ws.Create(o.CreateFlags.CreateOpts)
 	if err != nil {

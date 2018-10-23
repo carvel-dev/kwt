@@ -11,14 +11,12 @@ type WorkspaceFlags struct {
 }
 
 func (s *WorkspaceFlags) Set(cmd *cobra.Command, flagsFactory cmdcore.FlagsFactory) {
-	s.NamespaceFlags.Set(cmd, flagsFactory)
-
-	cmd.Flags().StringVarP(&s.Name, "workspace", "w", "", "Specified workspace")
+	s.SetNonRequired(cmd, flagsFactory)
 	cmd.MarkFlagRequired("workspace")
 }
 
 func (s *WorkspaceFlags) SetNonRequired(cmd *cobra.Command, flagsFactory cmdcore.FlagsFactory) {
 	s.NamespaceFlags.Set(cmd, flagsFactory)
 
-	cmd.Flags().StringVarP(&s.Name, "workspace", "w", "w", "Specified workspace")
+	cmd.Flags().StringVarP(&s.Name, "workspace", "w", "", "Specified workspace")
 }

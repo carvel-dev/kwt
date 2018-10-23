@@ -17,7 +17,7 @@ kwt workspace create [flags]
       --di string                   Set working directory for executing script to particular's input directory
   -d, --directory string            Set working directory for executing script (relative to workspace directory unless is an absolute path)
       --enter                       Enter workspace after create
-      --generate-name               Set to generate name (default true)
+      --generate-name               Set to generate name
   -h, --help                        help for create
       --image string                Set image (example: nginx)
       --image-command strings       Set command (can be set multiple times)
@@ -30,7 +30,7 @@ kwt workspace create [flags]
       --rm                          Remove workspace after execution is finished
       --service-account string      Set service account (could be used for pulling private images)
       --watch                       Watch and continiously sync inputs
-  -w, --workspace string            Specified workspace (default "w")
+  -w, --workspace string            Specified workspace
 ```
 
 ### Options inherited from parent commands
