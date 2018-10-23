@@ -39,6 +39,19 @@ func (k *KwtNet) Start(args []string) {
 	k.StartWithoutCleanup(args)
 }
 
+func (k *KwtNet) Listen(args []string) {
+	k.cleanUp()
+
+	k.logger.Section("Starting net listen in background", func() {
+		go func() {
+			k.kwt.RunWithOpts(append([]string{"net", "listen", "--tty"}, args...), RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh, NoNamespace: true})
+			k.doneCh <- struct{}{}
+		}()
+	})
+
+	k.waitForReady()
+}
+
 func (k *KwtNet) End() {
 	k.EndWithoutCleanup()
 	k.cleanUp()
@@ -52,6 +65,17 @@ func (k *KwtNet) StartWithoutCleanup(args []string) {
 		}()
 	})
 
+	k.waitForReady()
+}
+
+func (k *KwtNet) EndWithoutCleanup() {
+	k.logger.Section("Terminating net command tailing", func() {
+		k.cancelCh <- struct{}{}
+		<-k.doneCh
+	})
+}
+
+func (k *KwtNet) waitForReady() {
 	k.logger.Section("Wait for forwarding to be ready", func() {
 		timeoutCh := time.After(2 * time.Minute)
 		const expectedOutput = "Ready!"
@@ -72,13 +96,6 @@ func (k *KwtNet) StartWithoutCleanup(args []string) {
 
 			time.Sleep(1 * time.Second)
 		}
-	})
-}
-
-func (k *KwtNet) EndWithoutCleanup() {
-	k.logger.Section("Terminating net start tailing", func() {
-		k.cancelCh <- struct{}{}
-		<-k.doneCh
 	})
 }
 
