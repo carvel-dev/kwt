@@ -30,9 +30,7 @@ func NewDNSServerFactory(dnsFlags DNSFlags, defaultRecursorIPs ctlnet.DNSIPs, co
 }
 
 func (f DNSServerFactory) NewDNSServer(dstConnFactory dstconn.Factory) (ctlnet.DNSServer, error) {
-	kubeIPResolver := ctlkubedns.NewKubeDNSIPResolver(f.coreClient)
-
-	opts, err := f.buildServerOpts(kubeIPResolver)
+	opts, err := f.buildServerOpts()
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +43,8 @@ func (f DNSServerFactory) NewDNSServer(dstConnFactory dstconn.Factory) (ctlnet.D
 	}
 
 	if f.dnsFlags.MDNS {
-		mdnsServer := ctlmdns.NewFactory().Build(kubeIPResolver, f.logger)
+		resolver := ctlkubedns.NewKubeDNSIPResolver(ctlkubedns.DefaultClusterDomain, f.coreClient)
+		mdnsServer := ctlmdns.NewFactory().Build(resolver, f.logger)
 		return CombinedDNSServer{server, mdnsServer}, nil
 	}
 
@@ -56,7 +55,7 @@ func (f DNSServerFactory) NewDNSOSCache() ctlnet.DNSOSCache {
 	return ctlnet.NewDNSOSCache(f.logger)
 }
 
-func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctldns.BuildOpts, error) {
+func (f DNSServerFactory) buildServerOpts() (ctldns.BuildOpts, error) {
 	domainsMap := map[string]ctldns.IPResolver{}
 
 	for _, val := range f.dnsFlags.Map {
@@ -65,12 +64,20 @@ func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctl
 			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to be in format 'domain=ip' but was '%s'", val)
 		}
 
-		ip := net.ParseIP(pieces[1])
-		if ip == nil {
-			return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to have valid IP '%s'", val)
+		var resolver ctldns.IPResolver
+
+		if pieces[1] == "kubernetes" {
+			resolver = ctlkubedns.NewKubeDNSIPResolver(pieces[0], f.coreClient)
+		} else {
+			ip := net.ParseIP(pieces[1])
+			if ip == nil {
+				return ctldns.BuildOpts{}, fmt.Errorf("Expected domain to IP mapping to have valid IP '%s'", val)
+			}
+
+			resolver = ctldns.NewStaticIPsResolver([]net.IP{ip})
 		}
 
-		domainsMap[pieces[0]] = ctldns.NewStaticIPsResolver([]net.IP{ip})
+		domainsMap[pieces[0]] = resolver
 	}
 
 	opts := ctldns.BuildOpts{
@@ -90,7 +97,8 @@ func (f DNSServerFactory) buildServerOpts(kubeIPResolver ctldns.IPResolver) (ctl
 			// Add mdns domain to regular resolver since some programs
 			// may just use /etc/resolv.conf for DNS resolution on OS X (eg dig)
 			// instead of relying on standard OS X resolution libraries
-			result[ctlmdns.Domain] = kubeIPResolver
+			result[ctlkubedns.DefaultClusterDomain] =
+				ctlkubedns.NewKubeDNSIPResolver(ctlkubedns.DefaultClusterDomain, f.coreClient)
 
 			return result, nil
 		},

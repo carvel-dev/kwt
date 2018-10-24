@@ -12,27 +12,37 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-const (
-	clusterSuffix = ".cluster.local."
-	svcSuffix     = ".svc" + clusterSuffix
-	podSuffix     = ".pod" + clusterSuffix
-)
+const DefaultClusterDomain = "cluster." + ctlmdns.Domain
 
 type KubeDNSIPResolver struct {
-	coreClient kubernetes.Interface
+	clusterSuffix string // eg .cluster.local.
+	svcSuffix     string // eg .svc
+	podSuffix     string // eg .pod
+	coreClient    kubernetes.Interface
 }
 
 var _ ctldns.IPResolver = KubeDNSIPResolver{}
 var _ ctlmdns.IPResolver = KubeDNSIPResolver{}
 
-func NewKubeDNSIPResolver(coreClient kubernetes.Interface) KubeDNSIPResolver {
-	return KubeDNSIPResolver{coreClient}
+func NewKubeDNSIPResolver(suffix string, coreClient kubernetes.Interface) KubeDNSIPResolver {
+	if !strings.HasPrefix(suffix, ".") {
+		suffix = "." + suffix
+	}
+	if !strings.HasSuffix(suffix, ".") {
+		suffix = suffix + "."
+	}
+	return KubeDNSIPResolver{
+		clusterSuffix: suffix,
+		svcSuffix:     ".svc" + suffix,
+		podSuffix:     ".pod" + suffix,
+		coreClient:    coreClient,
+	}
 }
 
 func (r KubeDNSIPResolver) String() string { return "kube-dns" }
 
 func (r KubeDNSIPResolver) ResolveIPv4(question string) ([]net.IP, bool, error) {
-	if !strings.HasSuffix(question, clusterSuffix) {
+	if !strings.HasSuffix(question, r.clusterSuffix) {
 		return nil, false, nil
 	}
 
@@ -40,12 +50,12 @@ func (r KubeDNSIPResolver) ResolveIPv4(question string) ([]net.IP, bool, error) 
 	// see more: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 	switch {
 	// smy-svc.my-namespace.svc.cluster.local -> cluster IP
-	case strings.HasSuffix(question, svcSuffix):
+	case strings.HasSuffix(question, r.svcSuffix):
 		ips, err := r.svcIP(question)
 		return ips, true, err
 
 	// 1-2-3-4.default.pod.cluster.local -> 1.2.3.4
-	case strings.HasSuffix(question, podSuffix):
+	case strings.HasSuffix(question, r.podSuffix):
 		ips, err := r.podIP(question)
 		return ips, true, err
 
@@ -55,15 +65,15 @@ func (r KubeDNSIPResolver) ResolveIPv4(question string) ([]net.IP, bool, error) 
 }
 
 func (r KubeDNSIPResolver) ResolveIPv6(question string) ([]net.IP, bool, error) {
-	if !strings.HasSuffix(question, clusterSuffix) {
+	if !strings.HasSuffix(question, r.clusterSuffix) {
 		return nil, false, nil
 	}
 
 	switch {
-	case strings.HasSuffix(question, svcSuffix):
+	case strings.HasSuffix(question, r.svcSuffix):
 		return nil, true, nil // no IPs
 
-	case strings.HasSuffix(question, podSuffix):
+	case strings.HasSuffix(question, r.podSuffix):
 		return nil, true, nil // no IPs
 
 	default:
@@ -72,7 +82,7 @@ func (r KubeDNSIPResolver) ResolveIPv6(question string) ([]net.IP, bool, error) 
 }
 
 func (r KubeDNSIPResolver) svcIP(question string) ([]net.IP, error) {
-	rest := strings.TrimSuffix(question, svcSuffix)
+	rest := strings.TrimSuffix(question, r.svcSuffix)
 
 	pieces := strings.SplitN(rest, ".", 2)
 	if len(pieces) != 2 {
@@ -98,7 +108,7 @@ func (r KubeDNSIPResolver) svcIP(question string) ([]net.IP, error) {
 }
 
 func (r KubeDNSIPResolver) podIP(question string) ([]net.IP, error) {
-	rest := strings.TrimSuffix(question, podSuffix)
+	rest := strings.TrimSuffix(question, r.podSuffix)
 
 	pieces := strings.SplitN(rest, ".", 2)
 	if len(pieces) != 2 {
@@ -113,15 +123,15 @@ func (r KubeDNSIPResolver) podIP(question string) ([]net.IP, error) {
 	return []net.IP{ip}, nil
 }
 
-func ServiceInternalDNSAddress(service corev1.Service) string {
-	addr := fmt.Sprintf("%s.%s%s", service.Name, service.Namespace, svcSuffix)
+func (r KubeDNSIPResolver) ServiceInternalDNSAddress(service corev1.Service) string {
+	addr := fmt.Sprintf("%s.%s%s", service.Name, service.Namespace, r.svcSuffix)
 	return strings.TrimSuffix(addr, ".")
 }
 
-func PodInternalDNSAddress(pod corev1.Pod) string {
+func (r KubeDNSIPResolver) PodInternalDNSAddress(pod corev1.Pod) string {
 	if len(pod.Status.PodIP) > 0 {
 		dashedIP := strings.Replace(pod.Status.PodIP, ".", "-", -1)
-		addr := fmt.Sprintf("%s.%s%s", dashedIP, pod.Namespace, podSuffix)
+		addr := fmt.Sprintf("%s.%s%s", dashedIP, pod.Namespace, r.podSuffix)
 		return strings.TrimSuffix(addr, ".")
 	}
 	return ""

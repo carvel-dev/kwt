@@ -64,10 +64,12 @@ func (o *PodsOptions) Run() error {
 		},
 	}
 
+	resolver := ctlkubedns.NewKubeDNSIPResolver(ctlkubedns.DefaultClusterDomain, coreClient)
+
 	for _, pod := range podList.Items {
 		table.Rows = append(table.Rows, []uitable.Value{
 			uitable.NewValueString(pod.Name),
-			uitable.NewValueString(ctlkubedns.PodInternalDNSAddress(pod)),
+			uitable.NewValueString(resolver.PodInternalDNSAddress(pod)),
 			uitable.NewValueString(pod.Status.PodIP),
 			cmdcore.NewValueStringsSingleLine(o.podPorts(pod)),
 		})

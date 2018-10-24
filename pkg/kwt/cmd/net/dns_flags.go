@@ -25,7 +25,7 @@ func (s *DNSFlags) SetWithPrefix(cmd *cobra.Command, prefix string) {
 	}
 
 	cmd.Flags().StringSliceVarP(&s.Recursors, prefix+"recursor", "r", nil, "Recursor (can be specified multiple times)")
-	cmd.Flags().StringSliceVar(&s.Map, prefix+"map", nil, "Domain to IP mapping (can be specified multiple times) (example: 'test.=127.0.0.1')")
+	cmd.Flags().StringSliceVar(&s.Map, prefix+"map", nil, "Domain to IP or Kubernetes DNS mapping (can be specified multiple times) (example: 'test.=127.0.0.1', 'custom.=kubernetes')")
 	cmd.Flags().StringSliceVar(&s.MapExecs, prefix+"map-exec", nil, "Domain to IP mapping command to execute periodically (can be specified multiple times) (example: 'knctl dns-map')")
 
 	// OS X needs mDNS resolver to cover .local domain

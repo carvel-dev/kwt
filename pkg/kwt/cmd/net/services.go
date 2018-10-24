@@ -64,10 +64,12 @@ func (o *ServicesOptions) Run() error {
 		},
 	}
 
+	resolver := ctlkubedns.NewKubeDNSIPResolver(ctlkubedns.DefaultClusterDomain, coreClient)
+
 	for _, svc := range svcList.Items {
 		table.Rows = append(table.Rows, []uitable.Value{
 			uitable.NewValueString(svc.Name),
-			uitable.NewValueString(ctlkubedns.ServiceInternalDNSAddress(svc)),
+			uitable.NewValueString(resolver.ServiceInternalDNSAddress(svc)),
 			uitable.NewValueString(svc.Spec.ClusterIP),
 			cmdcore.NewValueStringsSingleLine(o.svcPorts(svc)),
 		})
