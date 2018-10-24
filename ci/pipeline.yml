@@ -27,6 +27,7 @@ jobs:
         path: gopath/src/github.com/cppforlife/kwt
 
 - name: e2e-tests
+  serial: true
   plan:
   - get: e2e-tests-interval
     trigger: true
