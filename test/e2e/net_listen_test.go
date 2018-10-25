@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
@@ -18,11 +19,19 @@ func TestNetListen(t *testing.T) {
 	kwtNetStart.Start([]string{})
 	defer kwtNetStart.End()
 
+	defer func() {
+		fmt.Printf("start cmd output: \n%s\n", kwtNetStart.CollectedOutput())
+	}()
+
 	localAddr := "localhost:8080"
 	svcName := "kwt-listen-web"
 
 	kwtNetListen.Listen([]string{"--local", localAddr, "--service", svcName})
 	defer kwtNetListen.End()
+
+	defer func() {
+		fmt.Printf("listen cmd output: \n%s\n", kwtNetListen.CollectedOutput())
+	}()
 
 	webAddr := ""
 	expectedOutput := "test-reply"
