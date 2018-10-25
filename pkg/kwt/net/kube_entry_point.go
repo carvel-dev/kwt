@@ -267,7 +267,7 @@ func (f KubeEntryPoint) createNetPod() (*corev1.Pod, error) {
 		Name: f.podName,
 
 		Image:           "registry.hub.docker.com/cppforlife/sshd@sha256:f9427e82765e3fc0a7ef1357f00e64cb8754dba8370b2a6176431b8b6f48b85b",
-		ImagePullPolicy: corev1.PullAlways,
+		ImagePullPolicy: corev1.PullIfNotPresent,
 
 		// Locally, `cd images/sshd && docker build . -t cppforlife/sshd:latest`
 		// Image:           "cppforlife/sshd:latest",
