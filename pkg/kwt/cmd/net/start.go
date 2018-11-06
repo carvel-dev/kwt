@@ -48,7 +48,19 @@ func NewStartCmd(o *StartOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Comm
 		Use:     "start",
 		Aliases: []string{"s"},
 		Short:   "Sets up network access",
-		Example: "sudo -E kwt net start",
+		Example: `
+	# Detect settings automatically
+  sudo -E kwt net start
+
+  # Provide predefined set of subnets to proxy
+  sudo -E kwt net start --subnet 10.19.247.0/24 --subnet 10.19.248.0/24
+
+  # Redirect all example.com and its subdomains to localhost
+  sudo -E kwt net start --dns-map example.com=127.0.0.1
+
+  # Dynamically configure DNS mappings
+  sudo -E kwt net start --dns-map-exec='knctl dns-map'
+`,
 		RunE:    func(_ *cobra.Command, _ []string) error { return o.Run() },
 	}
 

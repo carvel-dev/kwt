@@ -51,14 +51,14 @@ func NewListenCmd(o *ListenOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Co
 		Aliases: []string{"l"},
 		Short:   "Redirect incoming service traffic to a local port",
 		Example: `
-	# Create service 'svc1' and forward its port 80 to localhost:80
-	kwt net listen --service svc1
+  # Create service 'svc1' and forward its port 80 to localhost:80
+  kwt net listen --service svc1
 
-	# Create service 'svc1' and forward its port 8080 to localhost:8081
-	kwt net listen -r 8080 -l localhost:8081 --service svc1
+  # Create service 'svc1' and forward its port 8080 to localhost:8081
+  kwt net listen -r 8080 -l localhost:8081 --service svc1
 
-	# TODO Create service and forward it to local listening process
-	kwt net l --service svc1 --local-process foo
+  # TODO Create service and forward it to local listening process
+  kwt net l --service svc1 --local-process foo
 `,
 		RunE: func(_ *cobra.Command, _ []string) error { return o.Run() },
 	}
