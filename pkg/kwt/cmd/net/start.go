@@ -49,7 +49,7 @@ func NewStartCmd(o *StartOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Comm
 		Aliases: []string{"s"},
 		Short:   "Sets up network access",
 		Example: `
-	# Detect settings automatically
+  # Detect settings automatically
   sudo -E kwt net start
 
   # Provide predefined set of subnets to proxy

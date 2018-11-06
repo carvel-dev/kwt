@@ -32,12 +32,11 @@ func NewStartDNSCmd(o *StartDNSOptions, flagsFactory cmdcore.FlagsFactory) *cobr
 		Use:   "start-dns",
 		Short: "Start DNS server and redirect system DNS resolution to it",
 		Example: `
-	# Redirect all example.com and its subdomains to localhost
+  # Redirect all example.com and its subdomains to localhost
   sudo -E kwt net start-dns --map example.com=127.0.0.1
 
   # Dynamically configure DNS mappings
   sudo -E kwt net start-dns --map-exec='knctl dns-map'
-  
 `,
 		RunE:   func(_ *cobra.Command, _ []string) error { return o.Run() },
 		Hidden: true,

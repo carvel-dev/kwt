@@ -14,7 +14,7 @@ kwt net start [flags]
 
 ```
 
-	# Detect settings automatically
+  # Detect settings automatically
   sudo -E kwt net start
 
   # Provide predefined set of subnets to proxy
