@@ -29,8 +29,8 @@ func NewStartDNSOptions(depsFactory cmdcore.DepsFactory, ui ui.UI, cancelSignals
 
 func NewStartDNSCmd(o *StartDNSOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "start-dns",
-		Short:   "Start DNS server and redirect system DNS resolution to it",
+		Use:   "start-dns",
+		Short: "Start DNS server and redirect system DNS resolution to it",
 		Example: `
 	# Redirect all example.com and its subdomains to localhost
   sudo -E kwt net start-dns --map example.com=127.0.0.1
@@ -39,8 +39,8 @@ func NewStartDNSCmd(o *StartDNSOptions, flagsFactory cmdcore.FlagsFactory) *cobr
   sudo -E kwt net start-dns --map-exec='knctl dns-map'
   
 `,
-		RunE:    func(_ *cobra.Command, _ []string) error { return o.Run() },
-		Hidden:  true,
+		RunE:   func(_ *cobra.Command, _ []string) error { return o.Run() },
+		Hidden: true,
 	}
 	o.DNSFlags.Set(cmd)
 	o.LoggingFlags.Set(cmd)

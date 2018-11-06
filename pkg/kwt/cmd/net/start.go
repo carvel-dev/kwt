@@ -61,7 +61,7 @@ func NewStartCmd(o *StartOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Comm
   # Dynamically configure DNS mappings
   sudo -E kwt net start --dns-map-exec='knctl dns-map'
 `,
-		RunE:    func(_ *cobra.Command, _ []string) error { return o.Run() },
+		RunE: func(_ *cobra.Command, _ []string) error { return o.Run() },
 	}
 
 	o.NamespaceFlags.Set(cmd)

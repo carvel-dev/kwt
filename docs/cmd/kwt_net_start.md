@@ -13,7 +13,19 @@ kwt net start [flags]
 ### Examples
 
 ```
-sudo -E kwt net start
+
+	# Detect settings automatically
+  sudo -E kwt net start
+
+  # Provide predefined set of subnets to proxy
+  sudo -E kwt net start --subnet 10.19.247.0/24 --subnet 10.19.248.0/24
+
+  # Redirect all example.com and its subdomains to localhost
+  sudo -E kwt net start --dns-map example.com=127.0.0.1
+
+  # Dynamically configure DNS mappings
+  sudo -E kwt net start --dns-map-exec='knctl dns-map'
+
 ```
 
 ### Options
