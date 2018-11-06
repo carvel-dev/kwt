@@ -1,6 +1,8 @@
-## Network Commands
+## Network Commands (`kwt net start` and `kwt net listen`)
 
-`kwt net start` commands provide a way to access Kubernetes services and pods via DNS or IPs directly from your workstation. Only OS X and Linux is currently supported. 
+### Start
+
+`kwt net start` command provides a way to access Kubernetes services and pods via DNS or IPs directly from your workstation. Only OS X and Linux is currently supported. 
 
 Possible uses:
 
@@ -132,7 +134,7 @@ Clean up on-cluster resources taken by `kwt net` (one pod and two secrets)
 kwt net clean-up
 ```
 
-### Other tools
+#### Other tools
 
 - [`kubectl proxy` command](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/) acts as a reverse proxy. It rewrites HTTP URLs and does not offer access to TCP services making it not viable for some use cases.
 
@@ -141,3 +143,15 @@ kwt net clean-up
 - [`sshuttle`](https://github.com/sshuttle/sshuttle) is a generic tool that is used to forward traffic transparently from your local machine to remote machine via SSH. Unfortunately sshuttle is written in Python making it somewhat challenging to package it as a single easy to install binary. `kwt net` firewall configuration (iptables, pfctl) is almost exactly same as sshuttle's; however, kwt currently relies on sshd's SOCKS5 support for making remote connections.
 
 - [`telepresence`](https://github.com/telepresenceio/telepresence/) is a tool that wraps sshuttle and makes it more Kubernetes native.
+
+---
+
+### Listen
+
+`kwt net listen` command allow to forward in-cluster traffic to a local process.
+
+```
+my-laptop $ kwt net listen -r 8080 -l localhost:8081 --service svc1
+```
+
+will forward service `svc1` port `8080` to any local process that listens on port `8081`.
