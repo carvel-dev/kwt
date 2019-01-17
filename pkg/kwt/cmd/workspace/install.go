@@ -21,6 +21,7 @@ type InstallOptions struct {
 	Firefox      bool
 	SublimeText  bool
 	GoogleChrome bool
+	Go1x         bool
 }
 
 type installer struct {
@@ -46,6 +47,7 @@ func NewInstallCmd(o *InstallOptions, flagsFactory cmdcore.FlagsFactory) *cobra.
 	cmd.Flags().BoolVar(&o.Firefox, "firefox", false, "Install Firefox")
 	cmd.Flags().BoolVar(&o.SublimeText, "sublime", false, "Install Sublime Text")
 	cmd.Flags().BoolVar(&o.GoogleChrome, "chrome", false, "Install Google Chrome")
+	cmd.Flags().BoolVar(&o.Go1x, "go1x", false, "Install Go 1.x")
 
 	return cmd
 }
@@ -84,6 +86,7 @@ func (o *InstallOptions) Run() error {
 		{Enabled: o.Firefox, Title: "Mozilla Firefox", InstallFunc: desktop.AddFirefox},
 		{Enabled: o.SublimeText, Title: "Sublime Text 3", InstallFunc: desktop.AddSublimeText},
 		{Enabled: o.GoogleChrome, Title: "Google Chrome", InstallFunc: desktop.AddChrome},
+		{Enabled: o.Go1x, Title: "Go 1.x", InstallFunc: desktop.AddGo1x},
 	}
 
 	for _, installer := range installers {

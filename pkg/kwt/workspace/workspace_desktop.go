@@ -84,3 +84,22 @@ func (w WorkspaceDesktop) AddChrome(restConfig *rest.Config) error {
 
 	return w.Workspace.Execute(execOpts, restConfig)
 }
+
+func (w WorkspaceDesktop) AddGo1x(restConfig *rest.Config) error {
+	execOpts := ExecuteOpts{
+		Command: []string{"/bin/bash"},
+		CommandArgs: []string{"-c", `
+			set -e -x
+
+			apt-get update
+			apt-get -y install sudo vim wget
+
+			wget -q -O - https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz > /tmp/go_1_11.tgz
+			tar xzvf /tmp/go_1_11.tgz -C /usr/local
+
+			echo 'export PATH=$PATH:/usr/local/go/bin' >> /etc/profile
+		`},
+	}
+
+	return w.Workspace.Execute(execOpts, restConfig)
+}
