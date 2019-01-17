@@ -18,6 +18,7 @@ type CreateOptions struct {
 	WorkspaceFlags WorkspaceFlags
 	CreateFlags    CreateFlags
 	RunFlags       RunFlags
+	DeleteFlags    DeleteFlags
 }
 
 func NewCreateOptions(depsFactory cmdcore.DepsFactory, configFactory cmdcore.ConfigFactory, ui ui.UI) *CreateOptions {
@@ -34,6 +35,7 @@ func NewCreateCmd(o *CreateOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Co
 	o.WorkspaceFlags.SetNonRequired(cmd, flagsFactory)
 	o.CreateFlags.Set(cmd, flagsFactory)
 	o.RunFlags.Set(cmd, flagsFactory)
+	o.DeleteFlags.Set("delete", cmd, flagsFactory)
 	return cmd
 }
 
@@ -64,7 +66,7 @@ func (o *CreateOptions) Run() error {
 	defer func() {
 		if o.CreateFlags.Remove {
 			o.ui.PrintLinef("[%s] Deleting workspace...", time.Now().Format(time.RFC3339))
-			workspace.Delete() // TODO log error
+			workspace.Delete(o.DeleteFlags.Wait) // TODO log error
 		}
 	}()
 

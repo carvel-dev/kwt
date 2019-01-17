@@ -16,6 +16,7 @@ kwt workspace install [flags]
       --chrome             Install Google Chrome
       --desktop            Configure X11 and VNC access
       --firefox            Install Firefox
+      --go1x               Install Go 1.x
   -h, --help               help for install
   -n, --namespace string   Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
       --sublime            Install Sublime Text

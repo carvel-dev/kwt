@@ -8,6 +8,7 @@ import (
 
 	ctlkube "github.com/cppforlife/kwt/pkg/kwt/kube"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -107,10 +108,23 @@ func (w *WorkspaceImpl) Download(output DownloadOutput, restConfig *rest.Config)
 	return nil
 }
 
-func (w *WorkspaceImpl) Delete() error {
+func (w *WorkspaceImpl) Delete(wait bool) error {
 	err := w.coreClient.CoreV1().Pods(w.pod.Namespace).Delete(w.pod.Name, &metav1.DeleteOptions{})
 	if err != nil {
 		return fmt.Errorf("Deleting workspace '%s': %s", w.pod.Name, err)
+	}
+
+	if wait {
+		for {
+			time.Sleep(500 * time.Millisecond)
+
+			_, getErr := w.coreClient.CoreV1().Pods(w.pod.Namespace).Get(w.pod.Name, metav1.GetOptions{})
+			if getErr != nil {
+				if errors.IsNotFound(getErr) {
+					return nil
+				}
+			}
+		}
 	}
 
 	return nil

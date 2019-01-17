@@ -29,5 +29,5 @@ type Workspace interface {
 	Upload(UploadInput, *rest.Config) error // TODO remove rest.Config
 	Download(DownloadOutput, *rest.Config) error
 
-	Delete() error
+	Delete(bool) error
 }

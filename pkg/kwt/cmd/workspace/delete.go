@@ -12,6 +12,7 @@ type DeleteOptions struct {
 	ui          ui.UI
 
 	WorkspaceFlags WorkspaceFlags
+	DeleteFlags    DeleteFlags
 }
 
 func NewDeleteOptions(depsFactory cmdcore.DepsFactory, ui ui.UI) *DeleteOptions {
@@ -26,6 +27,7 @@ func NewDeleteCmd(o *DeleteOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Co
 		RunE:    func(_ *cobra.Command, _ []string) error { return o.Run() },
 	}
 	o.WorkspaceFlags.Set(cmd, flagsFactory)
+	o.DeleteFlags.Set("", cmd, flagsFactory)
 	return cmd
 }
 
@@ -42,5 +44,5 @@ func (o *DeleteOptions) Run() error {
 		return err
 	}
 
-	return workspace.Delete()
+	return workspace.Delete(o.DeleteFlags.Wait)
 }

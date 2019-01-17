@@ -14,6 +14,7 @@ kwt workspace create [flags]
 
 ```
   -c, --command string              Set command
+      --delete-wait                 Wait for deletion to complete
       --di string                   Set working directory for executing script to particular's input directory
   -d, --directory string            Set working directory for executing script (relative to workspace directory unless is an absolute path)
       --enter                       Enter workspace after create

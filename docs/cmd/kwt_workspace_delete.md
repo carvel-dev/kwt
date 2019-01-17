@@ -15,6 +15,7 @@ kwt workspace delete [flags]
 ```
   -h, --help               help for delete
   -n, --namespace string   Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
+      --wait               Wait for deletion to complete
   -w, --workspace string   Specified workspace
 ```
 
