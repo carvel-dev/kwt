@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"syscall"
 
 	ctlkube "github.com/cppforlife/kwt/pkg/kwt/kube"
 	"k8s.io/client-go/rest"
@@ -16,7 +15,12 @@ func (w *WorkspaceImpl) Enter() error {
 		return fmt.Errorf("Looking up kubectl binary location: %s", err)
 	}
 
-	return syscall.Exec(path, []string{path, "exec", "-it", w.pod.Name, "-c", workspaceContainerName, "bash"}, os.Environ())
+	cmd := exec.Command(path)
+	cmd.Args = []string{path, "exec", "-n", w.pod.Namespace, "-it", w.pod.Name, "-c", workspaceContainerName, "bash"}
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 type ExecuteOpts struct {
