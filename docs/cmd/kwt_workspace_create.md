@@ -24,6 +24,11 @@ kwt workspace create [flags]
       --image-command strings       Set command (can be set multiple times)
       --image-command-arg strings   Set command args (can be set multiple times)
   -i, --input string                Set inputs (format: 'name=local-dir-path' or 'name=local-dir-path:remote-dir-path') (example: knctl=.)
+      --install-chrome              Install Google Chrome
+      --install-desktop             Configure X11 and VNC access
+      --install-firefox             Install Firefox
+      --install-go1x                Install Go 1.x
+      --install-sublime             Install Sublime Text
   -n, --namespace string            Specified namespace ($KWT_NAMESPACE or default from kubeconfig)
   -o, --output string               Set outputs (format: 'name=local-dir-path' or 'name=local-dir-path:remote-dir-path') (example: knctl=.)
       --port ints                   Set port (multiple can be specified)

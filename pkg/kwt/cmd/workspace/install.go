@@ -16,18 +16,7 @@ type InstallOptions struct {
 	ui            ui.UI
 
 	WorkspaceFlags WorkspaceFlags
-
-	Desktop      bool
-	Firefox      bool
-	SublimeText  bool
-	GoogleChrome bool
-	Go1x         bool
-}
-
-type installer struct {
-	Enabled     bool
-	Title       string
-	InstallFunc func(*rest.Config) error
+	InstallFlags   InstallFlags
 }
 
 func NewInstallOptions(depsFactory cmdcore.DepsFactory, configFactory cmdcore.ConfigFactory, ui ui.UI) *InstallOptions {
@@ -42,13 +31,7 @@ func NewInstallCmd(o *InstallOptions, flagsFactory cmdcore.FlagsFactory) *cobra.
 		RunE:    func(_ *cobra.Command, _ []string) error { return o.Run() },
 	}
 	o.WorkspaceFlags.Set(cmd, flagsFactory)
-
-	cmd.Flags().BoolVar(&o.Desktop, "desktop", false, "Configure X11 and VNC access")
-	cmd.Flags().BoolVar(&o.Firefox, "firefox", false, "Install Firefox")
-	cmd.Flags().BoolVar(&o.SublimeText, "sublime", false, "Install Sublime Text")
-	cmd.Flags().BoolVar(&o.GoogleChrome, "chrome", false, "Install Google Chrome")
-	cmd.Flags().BoolVar(&o.Go1x, "go1x", false, "Install Go 1.x")
-
+	o.InstallFlags.Set("", cmd, flagsFactory)
 	return cmd
 }
 
@@ -79,21 +62,38 @@ func (o *InstallOptions) Run() error {
 		return err
 	}
 
-	desktop := ctlwork.WorkspaceDesktop{workspace}
+	return InstallOperation{workspace, o.InstallFlags, o.ui, restConfig}.Run()
+}
+
+type InstallOperation struct {
+	Workspace    ctlwork.Workspace
+	InstallFlags InstallFlags
+	UI           ui.UI
+	RestConfig   *rest.Config
+}
+
+type installer struct {
+	Enabled     bool
+	Title       string
+	InstallFunc func(*rest.Config) error
+}
+
+func (o InstallOperation) Run() error {
+	desktop := ctlwork.WorkspaceDesktop{o.Workspace}
 
 	installers := []installer{
-		{Enabled: o.Desktop, Title: "desktop", InstallFunc: desktop.Install},
-		{Enabled: o.Firefox, Title: "Mozilla Firefox", InstallFunc: desktop.AddFirefox},
-		{Enabled: o.SublimeText, Title: "Sublime Text 3", InstallFunc: desktop.AddSublimeText},
-		{Enabled: o.GoogleChrome, Title: "Google Chrome", InstallFunc: desktop.AddChrome},
-		{Enabled: o.Go1x, Title: "Go 1.x", InstallFunc: desktop.AddGo1x},
+		{Enabled: o.InstallFlags.Desktop, Title: "desktop", InstallFunc: desktop.Install},
+		{Enabled: o.InstallFlags.Firefox, Title: "Mozilla Firefox", InstallFunc: desktop.AddFirefox},
+		{Enabled: o.InstallFlags.SublimeText, Title: "Sublime Text 3", InstallFunc: desktop.AddSublimeText},
+		{Enabled: o.InstallFlags.GoogleChrome, Title: "Google Chrome", InstallFunc: desktop.AddChrome},
+		{Enabled: o.InstallFlags.Go1x, Title: "Go 1.x", InstallFunc: desktop.AddGo1x},
 	}
 
 	for _, installer := range installers {
 		if installer.Enabled {
-			o.ui.PrintLinef("[%s] Installing %s...", time.Now().Format(time.RFC3339), installer.Title)
+			o.UI.PrintLinef("[%s] Installing %s...", time.Now().Format(time.RFC3339), installer.Title)
 
-			err := installer.InstallFunc(restConfig)
+			err := installer.InstallFunc(o.RestConfig)
 			if err != nil {
 				return err
 			}

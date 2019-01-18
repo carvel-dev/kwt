@@ -17,6 +17,7 @@ type CreateOptions struct {
 
 	WorkspaceFlags WorkspaceFlags
 	CreateFlags    CreateFlags
+	InstallFlags   InstallFlags
 	RunFlags       RunFlags
 	DeleteFlags    DeleteFlags
 }
@@ -34,6 +35,7 @@ func NewCreateCmd(o *CreateOptions, flagsFactory cmdcore.FlagsFactory) *cobra.Co
 	}
 	o.WorkspaceFlags.SetNonRequired(cmd, flagsFactory)
 	o.CreateFlags.Set(cmd, flagsFactory)
+	o.InstallFlags.Set("install", cmd, flagsFactory)
 	o.RunFlags.Set(cmd, flagsFactory)
 	o.DeleteFlags.Set("delete", cmd, flagsFactory)
 	return cmd
@@ -80,6 +82,11 @@ func (o *CreateOptions) Run() error {
 	}
 
 	restConfig, err := o.configFactory.RESTConfig()
+	if err != nil {
+		return err
+	}
+
+	err = InstallOperation{workspace, o.InstallFlags, o.ui, restConfig}.Run()
 	if err != nil {
 		return err
 	}
