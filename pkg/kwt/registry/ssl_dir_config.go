@@ -6,15 +6,23 @@ import (
 
 type SSLDirConfig struct {
 	envVarName string
+
 	volumeName string
 	certsPath  string
+
+	dockerVolumeName string
+	dockerCertsPath  string
 }
 
 func NewSSLDirConfig() SSLDirConfig {
 	return SSLDirConfig{
 		envVarName: "SSL_CERT_DIR", // golang's crypto/x509 (TODO SSL_CERT_FILE?)
+
 		volumeName: "host-certs",
 		certsPath:  "/etc/ssl/certs",
+
+		dockerVolumeName: "docker-host-certs",
+		dockerCertsPath:  "/etc/docker/certs.d",
 	}
 }
 
@@ -47,6 +55,23 @@ func (c SSLDirConfig) Volume() corev1.Volume {
 		Name: c.volumeName,
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{Path: c.certsPath},
+		},
+	}
+}
+
+func (c SSLDirConfig) DockerVolumeMount(readOnly bool) corev1.VolumeMount {
+	return corev1.VolumeMount{
+		Name:      c.dockerVolumeName,
+		MountPath: c.dockerCertsPath,
+		ReadOnly:  readOnly,
+	}
+}
+
+func (c SSLDirConfig) DockerVolume() corev1.Volume {
+	return corev1.Volume{
+		Name: c.dockerVolumeName,
+		VolumeSource: corev1.VolumeSource{
+			HostPath: &corev1.HostPathVolumeSource{Path: c.dockerCertsPath},
 		},
 	}
 }

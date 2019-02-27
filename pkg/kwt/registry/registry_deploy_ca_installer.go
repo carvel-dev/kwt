@@ -13,7 +13,7 @@ import (
 
 // deployCAInstaller creates a DaemonSet which installs registry's CA certificate
 // on hosts so that container runtime (Docker) can use cluster registry for pulling images.
-func (r Registry) deployCAInstaller() error {
+func (r Registry) deployCAInstaller(ip string) error {
 	sslConfig := NewSSLDirConfig()
 	// trueBool := true
 	// zeroInt64 := int64(0)
@@ -28,9 +28,18 @@ func (r Registry) deployCAInstaller() error {
 				Command: []string{"/bin/sh"},
 				Args: []string{
 					"-c",
-					`set -e
+					fmt.Sprintf(`set -e
+
           echo "$REGISTRY_HTTP_TLS_CA_CERTIFICATE" > /etc/ssl/certs/kwt-registry-ca.pem
-          while true; do sleep 86000; done`,
+
+          ip="%s"
+          mkdir -p /etc/docker/certs.d/${ip}
+          echo "$REGISTRY_HTTP_TLS_CA_CERTIFICATE" > /etc/docker/certs.d/${ip}/ca.pem
+
+          mkdir -p /etc/docker/certs.d/${ip}:443
+          echo "$REGISTRY_HTTP_TLS_CA_CERTIFICATE" > /etc/docker/certs.d/${ip}:443/ca.pem
+
+          while true; do sleep 86000; done`, ip),
 				},
 				Resources: corev1.ResourceRequirements{
 					// keep request==limit to keep this container in guaranteed class
@@ -58,10 +67,16 @@ func (r Registry) deployCAInstaller() error {
 				// 	Privileged: &trueBool,
 				// 	RunAsUser:  &zeroInt64, // 0 is root
 				// },
-				VolumeMounts: []corev1.VolumeMount{sslConfig.VolumeMount(false)},
+				VolumeMounts: []corev1.VolumeMount{
+					sslConfig.VolumeMount(false),
+					sslConfig.DockerVolumeMount(false),
+				},
 			},
 		},
-		Volumes: []corev1.Volume{sslConfig.Volume()},
+		Volumes: []corev1.Volume{
+			sslConfig.Volume(),
+			sslConfig.DockerVolume(),
+		},
 	}
 
 	const (

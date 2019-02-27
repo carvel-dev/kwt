@@ -106,7 +106,7 @@ func (r Registry) Install() error {
 
 	r.logger.Info(r.logTag, "Deploying CA installer '%s'", r.installerDSName)
 
-	err = r.deployCAInstaller()
+	err = r.deployCAInstaller(ip)
 	if err != nil {
 		return err
 	}
