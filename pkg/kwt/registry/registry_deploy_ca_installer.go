@@ -58,7 +58,7 @@ func (r Registry) deployCAInstaller(ip string) error {
 						ValueFrom: &corev1.EnvVarSource{
 							SecretKeyRef: &corev1.SecretKeySelector{
 								LocalObjectReference: corev1.LocalObjectReference{Name: r.tlsSecretName},
-								Key:                  corev1.TLSCertKey,
+								Key:                  tlsCACertKey,
 							},
 						},
 					},
