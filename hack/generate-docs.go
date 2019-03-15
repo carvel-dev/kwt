@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra/doc"
-	"github.com/cppforlife/kwt/pkg/kwt/cmd"
+	"github.com/k14s/kwt/pkg/kwt/cmd"
 )
 
 func main() {

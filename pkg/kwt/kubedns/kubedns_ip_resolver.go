@@ -5,8 +5,8 @@ import (
 	"net"
 	"strings"
 
-	ctldns "github.com/cppforlife/kwt/pkg/kwt/dns"
-	ctlmdns "github.com/cppforlife/kwt/pkg/kwt/mdns"
+	ctldns "github.com/k14s/kwt/pkg/kwt/dns"
+	ctlmdns "github.com/k14s/kwt/pkg/kwt/mdns"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

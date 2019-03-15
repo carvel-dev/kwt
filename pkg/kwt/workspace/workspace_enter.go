@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	ctlkube "github.com/cppforlife/kwt/pkg/kwt/kube"
+	ctlkube "github.com/k14s/kwt/pkg/kwt/kube"
 	"k8s.io/client-go/rest"
 )
 

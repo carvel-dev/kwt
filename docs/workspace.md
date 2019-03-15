@@ -23,7 +23,7 @@ In some cases you may want to run additional scripts in an existing workspaces:
 
 ```bash
 kwt workspace ls
-kwt workspace run -w <some-name> -i kwt=.:gopath/src/github.com/cppforlife/kwt -c './gopath/src/github.com/cppforlife/kwt/ci/unit-tests.sh'
+kwt workspace run -w <some-name> -i kwt=.:gopath/src/github.com/k14s/kwt -c './gopath/src/github.com/k14s/kwt/ci/unit-tests.sh'
 ```
 
 Once done, delete your workspace
@@ -38,8 +38,8 @@ kwt workspace delete -w <some-name>
 # Upload current directory to /tmp/build/x/kwt
 kwt w s -i kwt=.
 
-# Upload current directory to /tmp/build/x/kwt/gopath/src/github.com/cppforlife/kwt
-kwt w s -i kwt=.:gopath/src/github.com/cppforlife/kwt
+# Upload current directory to /tmp/build/x/kwt/gopath/src/github.com/k14s/kwt
+kwt w s -i kwt=.:gopath/src/github.com/k14s/kwt
 
 # Upload current directory to remote abs path /tmp/kwt
 kwt w s -i kwt=.:/tmp/kwt
@@ -51,8 +51,8 @@ kwt w s -i kwt=.:/tmp/kwt
 # Download /tmp/build/x/kwt to current directory
 kwt w s -o kwt=.
 
-# Download gopath/src/github.com/cppforlife/kwt to current directory
-kwt w s -o kwt=.:gopath/src/github.com/cppforlife/kwt
+# Download gopath/src/github.com/k14s/kwt to current directory
+kwt w s -o kwt=.:gopath/src/github.com/k14s/kwt
 
 # Download /tmp/build/x/kwt to /tmp/kwt
 kwt w s -o kwt=/tmp/kwt

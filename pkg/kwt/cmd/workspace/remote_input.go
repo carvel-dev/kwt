@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	ctlwork "github.com/cppforlife/kwt/pkg/kwt/workspace"
+	ctlwork "github.com/k14s/kwt/pkg/kwt/workspace"
 )
 
 type RemoteInput struct {

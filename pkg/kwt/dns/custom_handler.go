@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/cppforlife/kwt/pkg/kwt/dnsutil"
+	"github.com/k14s/kwt/pkg/kwt/dnsutil"
 	"github.com/miekg/dns"
 )
 

@@ -2,8 +2,8 @@ package resource
 
 import (
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlres "github.com/cppforlife/kwt/pkg/kwt/resources"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlres "github.com/k14s/kwt/pkg/kwt/resources"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )

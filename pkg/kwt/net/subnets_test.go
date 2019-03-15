@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	. "github.com/cppforlife/kwt/pkg/kwt/net"
+	. "github.com/k14s/kwt/pkg/kwt/net"
 )
 
 func TestGuessSubnets(t *testing.T) {

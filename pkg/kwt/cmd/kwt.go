@@ -5,12 +5,12 @@ import (
 
 	"github.com/cppforlife/cobrautil"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	cmdnet "github.com/cppforlife/kwt/pkg/kwt/cmd/net"
-	cmdreg "github.com/cppforlife/kwt/pkg/kwt/cmd/registry"
-	cmdres "github.com/cppforlife/kwt/pkg/kwt/cmd/resource"
-	cmdrestype "github.com/cppforlife/kwt/pkg/kwt/cmd/resourcetype"
-	cmdwork "github.com/cppforlife/kwt/pkg/kwt/cmd/workspace"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	cmdnet "github.com/k14s/kwt/pkg/kwt/cmd/net"
+	cmdreg "github.com/k14s/kwt/pkg/kwt/cmd/registry"
+	cmdres "github.com/k14s/kwt/pkg/kwt/cmd/resource"
+	cmdrestype "github.com/k14s/kwt/pkg/kwt/cmd/resourcetype"
+	cmdwork "github.com/k14s/kwt/pkg/kwt/cmd/workspace"
 	"github.com/spf13/cobra"
 )
 

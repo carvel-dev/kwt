@@ -7,12 +7,12 @@ import (
 	"os/exec"
 	"strings"
 
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctldns "github.com/cppforlife/kwt/pkg/kwt/dns"
-	ctlkubedns "github.com/cppforlife/kwt/pkg/kwt/kubedns"
-	ctlmdns "github.com/cppforlife/kwt/pkg/kwt/mdns"
-	ctlnet "github.com/cppforlife/kwt/pkg/kwt/net"
-	"github.com/cppforlife/kwt/pkg/kwt/net/dstconn"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctldns "github.com/k14s/kwt/pkg/kwt/dns"
+	ctlkubedns "github.com/k14s/kwt/pkg/kwt/kubedns"
+	ctlmdns "github.com/k14s/kwt/pkg/kwt/mdns"
+	ctlnet "github.com/k14s/kwt/pkg/kwt/net"
+	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
 	"k8s.io/client-go/kubernetes"
 )
 

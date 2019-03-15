@@ -21,10 +21,10 @@ jobs:
       run:
         path: /bin/bash
         args:
-        - gopath/src/github.com/cppforlife/kwt/ci/unit-tests.sh
+        - gopath/src/github.com/k14s/kwt/ci/unit-tests.sh
       inputs:
       - name: kwt
-        path: gopath/src/github.com/cppforlife/kwt
+        path: gopath/src/github.com/k14s/kwt
 
 - name: e2e-tests
   serial: true
@@ -52,16 +52,16 @@ jobs:
           set +x
           echo "$KUBECONFIG_CONTENTS" > ~/.kube/config
           set -x
-          ./gopath/src/github.com/cppforlife/kwt/ci/e2e-tests.sh
+          ./gopath/src/github.com/k14s/kwt/ci/e2e-tests.sh
       inputs:
       - name: kwt
-        path: gopath/src/github.com/cppforlife/kwt
+        path: gopath/src/github.com/k14s/kwt
 
 resources:
 - name: kwt
   type: git
   source:
-    uri: git@github.com:cppforlife/kwt
+    uri: git@github.com:k14s/kwt
     branch: master
     private_key: ((private_git_ssh_pull_key))
 

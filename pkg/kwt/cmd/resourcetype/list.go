@@ -5,8 +5,8 @@ import (
 
 	"github.com/cppforlife/go-cli-ui/ui"
 	uitable "github.com/cppforlife/go-cli-ui/ui/table"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlres "github.com/cppforlife/kwt/pkg/kwt/resources"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlres "github.com/k14s/kwt/pkg/kwt/resources"
 	"github.com/spf13/cobra"
 )
 

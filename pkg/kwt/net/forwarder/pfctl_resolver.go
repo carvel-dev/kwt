@@ -5,7 +5,7 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/cppforlife/kwt/pkg/kwt/net/pf"
+	"github.com/k14s/kwt/pkg/kwt/net/pf"
 )
 
 type PfctlResolver struct {

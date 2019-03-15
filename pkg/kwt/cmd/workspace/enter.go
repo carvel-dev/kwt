@@ -2,8 +2,8 @@ package workspace
 
 import (
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlwork "github.com/cppforlife/kwt/pkg/kwt/workspace"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlwork "github.com/k14s/kwt/pkg/kwt/workspace"
 	"github.com/spf13/cobra"
 )
 

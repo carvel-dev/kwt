@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/cppforlife/go-cli-ui/ui"
-	"github.com/cppforlife/kwt/pkg/kwt/cmd"
+	"github.com/k14s/kwt/pkg/kwt/cmd"
 
 	// Import to initialize client auth plugins.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"

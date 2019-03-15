@@ -2,8 +2,8 @@ package net
 
 import (
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlnet "github.com/cppforlife/kwt/pkg/kwt/net"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlnet "github.com/k14s/kwt/pkg/kwt/net"
 	"github.com/spf13/cobra"
 )
 

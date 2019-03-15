@@ -3,7 +3,7 @@ package net
 import (
 	"net"
 
-	"github.com/cppforlife/kwt/pkg/kwt/net/dstconn"
+	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
 	"github.com/miekg/dns"
 )
 

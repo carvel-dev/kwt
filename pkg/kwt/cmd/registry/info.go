@@ -3,8 +3,8 @@ package registry
 import (
 	"github.com/cppforlife/go-cli-ui/ui"
 	uitable "github.com/cppforlife/go-cli-ui/ui/table"
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlreg "github.com/cppforlife/kwt/pkg/kwt/registry"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlreg "github.com/k14s/kwt/pkg/kwt/registry"
 	"github.com/spf13/cobra"
 )
 

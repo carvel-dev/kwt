@@ -1,8 +1,8 @@
 package workspace
 
 import (
-	cmdcore "github.com/cppforlife/kwt/pkg/kwt/cmd/core"
-	ctlwork "github.com/cppforlife/kwt/pkg/kwt/workspace"
+	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	ctlwork "github.com/k14s/kwt/pkg/kwt/workspace"
 	"github.com/spf13/cobra"
 )
 
