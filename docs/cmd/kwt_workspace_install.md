@@ -15,6 +15,7 @@ kwt workspace install [flags]
 ```
       --chrome             Install Google Chrome
       --desktop            Configure X11 and VNC access
+      --docker             Install Docker
       --firefox            Install Firefox
       --go1x               Install Go 1.x
   -h, --help               help for install

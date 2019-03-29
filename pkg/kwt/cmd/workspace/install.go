@@ -87,6 +87,7 @@ func (o InstallOperation) Run() error {
 		{Enabled: o.InstallFlags.SublimeText, Title: "Sublime Text 3", InstallFunc: desktop.AddSublimeText},
 		{Enabled: o.InstallFlags.GoogleChrome, Title: "Google Chrome", InstallFunc: desktop.AddChrome},
 		{Enabled: o.InstallFlags.Go1x, Title: "Go 1.x", InstallFunc: desktop.AddGo1x},
+		{Enabled: o.InstallFlags.Docker, Title: "Docker", InstallFunc: desktop.AddDocker},
 	}
 
 	for _, installer := range installers {

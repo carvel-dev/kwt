@@ -11,6 +11,7 @@ type InstallFlags struct {
 	SublimeText  bool
 	GoogleChrome bool
 	Go1x         bool
+	Docker       bool
 }
 
 func (s *InstallFlags) Set(prefix string, cmd *cobra.Command, flagsFactory cmdcore.FlagsFactory) {
@@ -23,4 +24,5 @@ func (s *InstallFlags) Set(prefix string, cmd *cobra.Command, flagsFactory cmdco
 	cmd.Flags().BoolVar(&s.SublimeText, prefix+"sublime", false, "Install Sublime Text")
 	cmd.Flags().BoolVar(&s.GoogleChrome, prefix+"chrome", false, "Install Google Chrome")
 	cmd.Flags().BoolVar(&s.Go1x, prefix+"go1x", false, "Install Go 1.x")
+	cmd.Flags().BoolVar(&s.Docker, prefix+"docker", false, "Install Docker")
 }

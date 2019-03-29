@@ -26,6 +26,7 @@ kwt workspace create [flags]
   -i, --input string                Set inputs (format: 'name=local-dir-path' or 'name=local-dir-path:remote-dir-path') (example: knctl=.)
       --install-chrome              Install Google Chrome
       --install-desktop             Configure X11 and VNC access
+      --install-docker              Install Docker
       --install-firefox             Install Firefox
       --install-go1x                Install Go 1.x
       --install-sublime             Install Sublime Text
