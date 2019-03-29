@@ -103,3 +103,24 @@ func (w WorkspaceDesktop) AddGo1x(restConfig *rest.Config) error {
 
 	return w.Workspace.Execute(execOpts, restConfig)
 }
+
+func (w WorkspaceDesktop) AddDocker(restConfig *rest.Config) error {
+	execOpts := ExecuteOpts{
+		Command: []string{"/bin/bash"},
+		CommandArgs: []string{"-c", `
+			set -e -x
+
+			apt-get update
+			apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+			curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+			add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+			apt-get update
+
+			apt-get install -y docker-ce docker-ce-cli containerd.io
+		`},
+	}
+
+	return w.Workspace.Execute(execOpts, restConfig)
+}
