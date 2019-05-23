@@ -1,5 +1,7 @@
 # kwt
 
+- Slack: [#k14s in Kubernetes slack](https://slack.kubernetes.io)
+
 Kubernetes Workstation Tools CLI (`kwt`) provides helpful set of commands for application developers to develop applications with Kubernetes.
 
 Grab pre-built binaries from the [Releases page](https://github.com/k14s/kwt/releases).
