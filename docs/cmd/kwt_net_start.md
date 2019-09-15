@@ -37,7 +37,7 @@ kwt net start [flags]
       --dns-mdns                 Start MDNS server (default true)
   -r, --dns-recursor strings     Recursor (can be specified multiple times)
   -h, --help                     help for start
-      --namespace string         Namespace to use to manage networking pod (default "default")
+  -n, --namespace string         Namespace to use to manage networking pod (default "default")
       --remote-ip strings        Additional IP to include for subnet guessing (can be specified multiple times)
       --ssh-host string          SSH server address for forwarding connections (includes port)
       --ssh-private-key string   Private key for connecting to SSH server (PEM format)
