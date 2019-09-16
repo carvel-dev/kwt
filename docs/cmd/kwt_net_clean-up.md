@@ -15,7 +15,7 @@ kwt net clean-up [flags]
 ```
       --debug              Set logging level to debug
   -h, --help               help for clean-up
-      --namespace string   Namespace to use to manage networking pod (default "default")
+  -n, --namespace string   Namespace to use to manage networking pod (default "default")
 ```
 
 ### Options inherited from parent commands

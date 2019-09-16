@@ -9,5 +9,5 @@ type NamespaceFlags struct {
 }
 
 func (s *NamespaceFlags) Set(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&s.Name, "namespace", "default", "Namespace to use to manage networking pod")
+	cmd.Flags().StringVarP(&s.Name, "namespace", "n", "default", "Namespace to use to manage networking pod")
 }
