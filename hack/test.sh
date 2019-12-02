@@ -1,7 +1,13 @@
 #!/bin/bash
 
-set -e -x -u
+set -e -x
 
-GOCACHE=off go test ./pkg/... -test.v $@
+if [ -z "$GITHUB_ACTION" ]; then
+  go clean -testcache
+fi
 
-echo "Success"
+set -u
+
+go test ./pkg/... -test.v $@
+
+echo UNIT SUCCESS

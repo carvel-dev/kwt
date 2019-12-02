@@ -44,7 +44,7 @@ func (k *KwtNet) Listen(args []string) {
 
 	k.logger.Section("Starting net listen in background", func() {
 		go func() {
-			k.kwt.RunWithOpts(append([]string{"net", "listen", "--tty"}, args...), RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh, NoNamespace: true})
+			k.kwt.RunWithOpts(append([]string{"net", "listen", "--tty"}, args...), RunOpts{StdoutWriter: k.collectedOutput, CancelCh: k.cancelCh})
 			k.doneCh <- struct{}{}
 		}()
 	})

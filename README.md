@@ -12,5 +12,6 @@
 
 ```bash
 ./hack/build.sh
+export KWT_E2E_NAMESPACE=kwt-test
 sudo -E ./hack/test-all.sh
 ```
