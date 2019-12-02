@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+
+image: sshd
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Sources
+sources:
+- image: sshd
+  path: images/sshd
+  docker:
+    build:
+      pull: true
+      noCache: true
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: ImageDestinations
+destinations:
+- image: sshd
+  newImage: #@ data.values.push_repo

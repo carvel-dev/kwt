@@ -27,6 +27,7 @@ type KubeEntryPoint struct {
 	restConfig *rest.Config
 
 	namespace string
+	imageURL  string
 	podName   string
 	podPort   int
 
@@ -39,12 +40,13 @@ type KubeEntryPoint struct {
 
 var _ EntryPoint = KubeEntryPoint{}
 
-func NewKubeEntryPoint(coreClient kubernetes.Interface, restConfig *rest.Config, namespace string, logger Logger) KubeEntryPoint {
+func NewKubeEntryPoint(coreClient kubernetes.Interface, restConfig *rest.Config, namespace string, imageURL string, logger Logger) KubeEntryPoint {
 	return KubeEntryPoint{
 		coreClient: coreClient,
 		restConfig: restConfig,
 
 		namespace: namespace,
+		imageURL:  imageURL,
 		podName:   "kwt-net",
 		podPort:   2048,
 
@@ -250,6 +252,10 @@ func (f KubeEntryPoint) createNetPodHostSSHSecret() (string, error) {
 }
 
 func (f KubeEntryPoint) createNetPod() (*corev1.Pod, error) {
+	if len(f.imageURL) == 0 {
+		return nil, fmt.Errorf("Expected SSH image to be non-empty")
+	}
+
 	foundPod, err := f.coreClient.CoreV1().Pods(f.namespace).Get(f.podName, metav1.GetOptions{})
 	if err != nil {
 		if !errors.IsNotFound(err) {
@@ -266,12 +272,8 @@ func (f KubeEntryPoint) createNetPod() (*corev1.Pod, error) {
 	container := corev1.Container{
 		Name: f.podName,
 
-		Image:           "registry.hub.docker.com/cppforlife/sshd@sha256:f9427e82765e3fc0a7ef1357f00e64cb8754dba8370b2a6176431b8b6f48b85b",
+		Image:           f.imageURL,
 		ImagePullPolicy: corev1.PullIfNotPresent,
-
-		// Locally, `cd images/sshd && docker build . -t cppforlife/sshd:latest`
-		// Image:           "cppforlife/sshd:latest",
-		// ImagePullPolicy: corev1.PullNever,
 
 		Command: []string{"/bin/bash"},
 		Args: []string{

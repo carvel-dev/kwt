@@ -1,0 +1,3 @@
+#@data/values
+---
+push_repo: docker.io/cppforlife/sshd

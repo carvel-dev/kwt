@@ -49,5 +49,5 @@ func (o *CleanUpOptions) Run() error {
 
 	logger := cmdcore.NewLoggerWithDebug(o.ui, o.LoggingFlags.Debug)
 
-	return ctlnet.NewKubeEntryPoint(coreClient, restConfig, o.NamespaceFlags.Name, logger).Delete()
+	return ctlnet.NewKubeEntryPoint(coreClient, restConfig, o.NamespaceFlags.Name, "", logger).Delete()
 }

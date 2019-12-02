@@ -40,6 +40,7 @@ kwt net start [flags]
   -n, --namespace string         Namespace to use to manage networking pod (default "default")
       --remote-ip strings        Additional IP to include for subnet guessing (can be specified multiple times)
       --ssh-host string          SSH server address for forwarding connections (includes port)
+      --ssh-image string         Image URL to use for starting OpenSSH on K8s (default "index.docker.io/cppforlife/sshd@sha256:6c3170c4d97f2926ec034fc237554db237076bd9014469aac91610d89a9991d1")
       --ssh-private-key string   Private key for connecting to SSH server (PEM format)
       --ssh-user string          SSH server username
   -s, --subnet strings           Subnet, if specified subnets will not be guessed automatically (can be specified multiple times)

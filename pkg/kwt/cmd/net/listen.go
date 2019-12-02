@@ -110,7 +110,8 @@ func (o *ListenOptions) Run() error {
 			PrivateKeyPEM: o.SSHFlags.PrivateKey,
 		})
 	} else {
-		entryPoint = ctlnet.NewKubeEntryPoint(coreClient, restConfig, o.NamespaceFlags.Name, logger)
+		entryPoint = ctlnet.NewKubeEntryPoint(
+			coreClient, restConfig, o.NamespaceFlags.Name, o.SSHFlags.Image, logger)
 	}
 
 	reconnSSHClient := ctlnet.NewReconnSSHClient(entryPoint, logger)
