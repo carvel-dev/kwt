@@ -48,7 +48,7 @@ func NewIptables(opts IptablesOpts, exec CmdExecutor, logger Logger) Iptables {
 }
 
 func (i Iptables) CheckPrereqs() error {
-	out, err := i.runCmd([]string{"-L", "-t", "nat"})
+	out, err := i.runCmd([]string{"-L", "-t", "nat", "-n"})
 	if err != nil {
 		return fmt.Errorf("Checking 'iptables' can run successfully: %s (output: %s)", err, out)
 	}
