@@ -72,7 +72,7 @@ func (lis *ReconnListener) Addr() net.Addr {
 	if lis.listener != nil {
 		return lis.listener.Addr()
 	}
-	return dummyAddr{} // TODO better address
+	return fakeAddr{} // TODO better address
 }
 
 func (lis *ReconnListener) getListener() (net.Listener, error) {
@@ -128,9 +128,9 @@ func (lis *ReconnListener) disconnect() error {
 	return err
 }
 
-type dummyAddr struct{}
+type fakeAddr struct{}
 
-var _ net.Addr = dummyAddr{}
+var _ net.Addr = fakeAddr{}
 
-func (dummyAddr) Network() string { return "" }
-func (dummyAddr) String() string  { return "dummy-addr" }
+func (fakeAddr) Network() string { return "" }
+func (fakeAddr) String() string  { return "fake-addr" }
