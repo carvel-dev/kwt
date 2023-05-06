@@ -1,4 +1,3 @@
 /kwt
-/kwt-darwin-amd64
-/kwt-linux-amd64
+/kwt-*-*
 /tmp
