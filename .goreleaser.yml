@@ -22,7 +22,7 @@ archives:
   - format: binary
     name_template: >-
       {{- .ProjectName }}-
-      {{- tolower title .Os }}-
+      {{- tolower .Os }}-
       {{- if eq .Arch "x86_64" }}amd64
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end -}}
