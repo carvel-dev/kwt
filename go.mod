@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/cppforlife/cobrautil v0.0.0-20180924214100-a39a1714c920
 	github.com/cppforlife/go-cli-ui v0.0.0-20180806172124-5c4f53402506
-	github.com/miekg/dns v1.0.8
+	github.com/miekg/dns v1.1.25
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.2
 	golang.org/x/crypto v0.13.0
@@ -49,6 +49,7 @@ require (
 	github.com/vito/go-interact v0.0.0-20171111012221-fa338ed9e9ec // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20180724155351-3d292e4d0cdc // indirect
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/term v0.12.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
