@@ -1,4 +1,4 @@
-name: Checks after release is published
+name: Checks after any release is published
 on:
   release:
     types: ['published']
@@ -7,9 +7,10 @@ jobs:
   validate-github-action:
     runs-on: ubuntu-latest
     steps:
-      - uses: k14s/setup-k14s-action@v1
+      - uses: carvel-dev/setup-action@v1
         with:
           only: kwt
+          kwt: ${{ github.event.release.tag_name }}
       - run: |
           kwt version
           version=`kwt version`
@@ -17,9 +18,14 @@ jobs:
           tool_version="$(echo $version | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')"
           if [[ "v${tool_version}" == "${tag}" ]];
           then
-            echo "Version match with latest"
+            echo "Version match with $tag"
             exit 0
           else
             echo "Versions do not match v$tool_version != $tag"
             exit 1
           fi
+      - run: |
+          curl -X POST https://api.github.com/repos/carvel-dev/release-scripts/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.carvel_bot_access_token }} \
+          --data '{"event_type": "kwt_released", "client_payload": { "tagName": "${{ github.event.release.tag_name }}", "repo": "${{ github.repository }}", "toolName": "kwt" }}'
