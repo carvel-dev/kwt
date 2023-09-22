@@ -2,5 +2,5 @@
 vendor/
 docs/network.md
 
-# example we can change in the future - https://github.com/vmware-tanzu/carvel-kwt/issues/32
+# example we can change in the future - https://github.com/carvel-dev/kwt/issues/32
 test/e2e/assets/guestbook-all-in-one.yml
