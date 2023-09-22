@@ -1,6 +1,7 @@
 package dstconn
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -105,13 +106,9 @@ func (c *SSHClient) NewListener() (net.Listener, error) {
 }
 
 func (c *SSHClient) detectConnBrokenErr(err error) error {
-	isEOF := err == io.EOF
-	_, isUnexpected := err.(gossh.UnexpectedPackerErr)
-
-	if isEOF || isUnexpected {
+	if err == io.EOF || errors.Is(err, io.ErrUnexpectedEOF) {
 		return ConnectionBrokenErr{err}
 	}
-
 	return err
 }
 

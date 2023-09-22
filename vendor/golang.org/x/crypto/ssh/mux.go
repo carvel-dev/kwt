@@ -240,7 +240,7 @@ func (m *mux) onePacket() error {
 	id := binary.BigEndian.Uint32(packet[1:])
 	ch := m.chanList.getChan(id)
 	if ch == nil {
-		return fmt.Errorf("ssh: invalid channel %d", id)
+		return m.handleUnknownChannelPacket(id, packet)
 	}
 
 	return ch.handlePacket(packet)
@@ -303,14 +303,6 @@ func (m *mux) OpenChannel(chanType string, extra []byte) (Channel, <-chan *Reque
 	return ch, ch.incomingRequests, nil
 }
 
-type UnexpectedPackerErr struct {
-	msg interface{}
-}
-
-func (e UnexpectedPackerErr) Error() string {
-	return fmt.Sprintf("ssh: unexpected packet in response to channel open: %T", e.msg)
-}
-
 func (m *mux) openChannel(chanType string, extra []byte) (*channel, error) {
 	ch := m.newChannel(chanType, channelOutbound, extra)
 
@@ -333,6 +325,27 @@ func (m *mux) openChannel(chanType string, extra []byte) (*channel, error) {
 	case *channelOpenFailureMsg:
 		return nil, &OpenChannelError{msg.Reason, msg.Message}
 	default:
-		return nil, UnexpectedPackerErr{msg}
+		return nil, fmt.Errorf("ssh: unexpected packet in response to channel open: %T", msg)
+	}
+}
+
+func (m *mux) handleUnknownChannelPacket(id uint32, packet []byte) error {
+	msg, err := decode(packet)
+	if err != nil {
+		return err
+	}
+
+	switch msg := msg.(type) {
+	// RFC 4254 section 5.4 says unrecognized channel requests should
+	// receive a failure response.
+	case *channelRequestMsg:
+		if msg.WantReply {
+			return m.sendMessage(channelRequestFailureMsg{
+				PeersID: msg.PeersID,
+			})
+		}
+		return nil
+	default:
+		return fmt.Errorf("ssh: invalid channel %d", id)
 	}
 }
