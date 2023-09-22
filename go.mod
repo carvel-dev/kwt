@@ -24,7 +24,7 @@ require (
 	github.com/elazarl/goproxy v0.0.0-20221015165544-a0805db90819 // indirect
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/gogo/protobuf v1.1.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/btree v1.0.0 // indirect
