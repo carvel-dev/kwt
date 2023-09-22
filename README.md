@@ -3,7 +3,7 @@
 # kwt
 
 - Slack: [#carvel in Kubernetes slack](https://slack.kubernetes.io)
-- Install: grab pre-built binaries from the [Releases page](https://github.com/k14s/kwt/releases) or [Homebrew Carvel tap](https://github.com/vmware-tanzu/homebrew-carvel)
+- Install: grab pre-built binaries from the [Releases page](https://github.com/carvel-dev/kwt/releases) or [Homebrew Carvel tap](https://github.com/carve-dev/carvel)
 - Status: Experimental
 
 `kwt` (Kubernetes Workstation Tools) (pronounced spelled out) CLI provides helpful set of commands for application developers to develop applications with Kubernetes.
@@ -17,7 +17,7 @@ Please join us during our online community meetings. Details can be found on our
 
 You can chat with us on Kubernetes Slack in the #carvel channel and follow us on Twitter at @carvel_dev.
 
-Check out which organizations are using and contributing to Carvel: [Adopter's list](https://github.com/vmware-tanzu/carvel/blob/master/ADOPTERS.md)
+Check out which organizations are using and contributing to Carvel: [Adopter's list](https://github.com/carvel-dev/carvel/blob/master/ADOPTERS.md)
 
 ## Development
 

@@ -16,7 +16,7 @@ builds:
       - -trimpath
 
     ldflags:
-      - -X github.com/vmware-tanzu/carvel-kwt/pkg/kwt/version.Version={{ .Version }}
+      - -X github.com/k14s/kwt/pkg/kwt/version.Version={{ .Version }}
 
 # archives:
 #   - format: binary
