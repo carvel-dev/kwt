@@ -15,9 +15,6 @@ builds:
     flags:
       - -trimpath
 
-    ldflags:
-      - -X github.com/k14s/kwt/pkg/kwt/version.Version={{ .Version }}
-
 archives:
   - format: binary
     name_template: >-
