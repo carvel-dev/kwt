@@ -15,6 +15,9 @@ builds:
     flags:
       - -trimpath
 
+    ldflags:
+      - -X github.com/carvel-dev/kwt/pkg/kwt/cmd.Version={{ .Version }}
+
 archives:
   - format: binary
     name_template: >-
