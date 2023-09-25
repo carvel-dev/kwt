@@ -1,5 +1,5 @@
 FROM       ubuntu:xenial
-MAINTAINER Dmitriy Kalinin "https://github.com/cppforlife"
+LABEL org.opencontainers.image.source https://github.com/carvel-dev/kwt
 
 RUN apt-get update && apt-get install -y openssh-server
 RUN mkdir /var/run/sshd

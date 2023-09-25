@@ -36,7 +36,7 @@ kwt net listen [flags]
   -s, --service string           Service to create or update for incoming traffic
       --service-type string      Service type to set if creating service (default "ClusterIP")
       --ssh-host string          SSH server address for forwarding connections (includes port)
-      --ssh-image string         Image URL to use for starting OpenSSH on K8s (default "index.docker.io/cppforlife/sshd@sha256:6c3170c4d97f2926ec034fc237554db237076bd9014469aac91610d89a9991d1")
+      --ssh-image string         Image URL to use for starting OpenSSH on K8s (default "ghcr.io/carvel-dev/kwt/sshd@sha256:b47888724e3d891a3c8cb15155f9a434468b316c0e00a96e920fb5d1121cc4b0")
       --ssh-private-key string   Private key for connecting to SSH server (PEM format)
       --ssh-user string          SSH server username
 ```
