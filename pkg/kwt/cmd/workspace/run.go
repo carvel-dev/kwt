@@ -3,9 +3,9 @@ package workspace
 import (
 	"time"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlwork "github.com/carvel-dev/kwt/pkg/kwt/workspace"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlwork "github.com/k14s/kwt/pkg/kwt/workspace"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/rest"
 )

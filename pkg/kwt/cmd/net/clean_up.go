@@ -1,9 +1,9 @@
 package net
 
 import (
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlnet "github.com/carvel-dev/kwt/pkg/kwt/net"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlnet "github.com/k14s/kwt/pkg/kwt/net"
 	"github.com/spf13/cobra"
 )
 

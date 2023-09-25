@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"syscall"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctldns "github.com/carvel-dev/kwt/pkg/kwt/dns"
+	ctlfwd "github.com/carvel-dev/kwt/pkg/kwt/net/forwarder"
+	"github.com/carvel-dev/kwt/pkg/kwt/setgid"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctldns "github.com/k14s/kwt/pkg/kwt/dns"
-	ctlfwd "github.com/k14s/kwt/pkg/kwt/net/forwarder"
-	"github.com/k14s/kwt/pkg/kwt/setgid"
 	"github.com/spf13/cobra"
 )
 

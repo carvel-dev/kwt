@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	ctlwork "github.com/k14s/kwt/pkg/kwt/workspace"
+	ctlwork "github.com/carvel-dev/kwt/pkg/kwt/workspace"
 	"github.com/spf13/pflag"
 )
 

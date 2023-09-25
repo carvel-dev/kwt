@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	ctlkube "github.com/k14s/kwt/pkg/kwt/kube"
+	ctlkube "github.com/carvel-dev/kwt/pkg/kwt/kube"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

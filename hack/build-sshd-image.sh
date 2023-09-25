@@ -2,6 +2,6 @@
 
 set -e -x -u
 
-ytt -f images/sshd/ | kbld -f- | ytt -f image.yml=- -f pkg/kwt/cmd/net/ssh_flags_generated.go.txt --output-directory ./tmp/
+ytt -f images/sshd/ | kbld -f- | ytt -f image.yml=- -f pkg/kwt/cmd/net/ssh_flags_generated.go.txt --output-files ./tmp/
 
 mv ./tmp/ssh_flags_generated.go.txt pkg/kwt/cmd/net/ssh_flags_generated.go

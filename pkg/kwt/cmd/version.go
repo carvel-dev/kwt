@@ -3,14 +3,12 @@ package cmd
 import (
 	"fmt"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
 	"github.com/spf13/cobra"
 )
 
-const (
-	Version = "0.0.7"
-)
+var Version = "0.0.0+develop"
 
 type VersionOptions struct {
 	ui ui.UI

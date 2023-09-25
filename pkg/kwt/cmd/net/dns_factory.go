@@ -7,12 +7,12 @@ import (
 	"os/exec"
 	"strings"
 
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctldns "github.com/k14s/kwt/pkg/kwt/dns"
-	ctlkubedns "github.com/k14s/kwt/pkg/kwt/kubedns"
-	ctlmdns "github.com/k14s/kwt/pkg/kwt/mdns"
-	ctlnet "github.com/k14s/kwt/pkg/kwt/net"
-	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctldns "github.com/carvel-dev/kwt/pkg/kwt/dns"
+	ctlkubedns "github.com/carvel-dev/kwt/pkg/kwt/kubedns"
+	ctlmdns "github.com/carvel-dev/kwt/pkg/kwt/mdns"
+	ctlnet "github.com/carvel-dev/kwt/pkg/kwt/net"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/dstconn"
 	"k8s.io/client-go/kubernetes"
 )
 

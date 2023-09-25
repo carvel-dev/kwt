@@ -8,9 +8,11 @@ sources:
 - image: sshd
   path: images/sshd
   docker:
-    build:
+    buildx:
       pull: true
       noCache: true
+      rawOptions:
+      - --platform=linux/amd64,linux/arm64
 ---
 apiVersion: kbld.k14s.io/v1alpha1
 kind: ImageDestinations

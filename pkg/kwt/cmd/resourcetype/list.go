@@ -3,10 +3,10 @@ package resourcetype
 import (
 	"fmt"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlres "github.com/carvel-dev/kwt/pkg/kwt/resources"
 	"github.com/cppforlife/go-cli-ui/ui"
 	uitable "github.com/cppforlife/go-cli-ui/ui/table"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlres "github.com/k14s/kwt/pkg/kwt/resources"
 	"github.com/spf13/cobra"
 )
 

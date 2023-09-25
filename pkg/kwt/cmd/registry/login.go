@@ -5,9 +5,9 @@ import (
 	"os/exec"
 	"strings"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlreg "github.com/carvel-dev/kwt/pkg/kwt/registry"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlreg "github.com/k14s/kwt/pkg/kwt/registry"
 	"github.com/spf13/cobra"
 )
 

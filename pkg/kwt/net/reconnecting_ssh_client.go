@@ -4,7 +4,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/dstconn"
 )
 
 type ReconnSSHClient struct {

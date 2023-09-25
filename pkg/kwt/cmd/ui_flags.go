@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
 	"github.com/cppforlife/go-cli-ui/ui"
 	uitable "github.com/cppforlife/go-cli-ui/ui/table"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
 	"github.com/spf13/cobra"
 )
 

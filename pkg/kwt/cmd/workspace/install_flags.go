@@ -1,7 +1,7 @@
 package workspace
 
 import (
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
 	"github.com/spf13/cobra"
 )
 
