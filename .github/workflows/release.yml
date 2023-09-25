@@ -23,7 +23,7 @@ jobs:
           go-version: 1.21.1
       - name: Retrieve version
         run: |
-          echo "TAG_NAME=$(echo ${{ github.ref }}  | grep -Eo 'v[0-9].*')" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$(echo ${{ github.ref }}  | grep -Eo '[0-9].*')" >> $GITHUB_OUTPUT
         id: version
 
       - name: Run GoReleaser
