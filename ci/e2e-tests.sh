@@ -17,7 +17,7 @@ tar -C /usr/local -xzf /tmp/go
 export PATH=$PATH:/usr/local/go/bin
 
 export GOPATH=$PWD/gopath
-cd $GOPATH/src/github.com/k14s/kwt
+cd $GOPATH/src/github.com/carvel-dev/kwt
 
 ./hack/build.sh
 ln -sf $PWD/kwt /usr/local/bin/kwt

@@ -1,4 +1,4 @@
-module github.com/k14s/kwt
+module github.com/carvel-dev/kwt
 
 go 1.20
 

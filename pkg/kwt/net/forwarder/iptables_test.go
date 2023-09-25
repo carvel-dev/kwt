@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/k14s/kwt/pkg/kwt/net/forwarder"
+	. "github.com/carvel-dev/kwt/pkg/kwt/net/forwarder"
 )
 
 type FakeCmdExecutor struct {

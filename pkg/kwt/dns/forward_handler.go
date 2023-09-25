@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/k14s/kwt/pkg/kwt/dnsutil"
+	"github.com/carvel-dev/kwt/pkg/kwt/dnsutil"
 	"github.com/miekg/dns"
 )
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlnet "github.com/carvel-dev/kwt/pkg/kwt/net"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/dstconn"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/forwarder"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlnet "github.com/k14s/kwt/pkg/kwt/net"
-	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
-	"github.com/k14s/kwt/pkg/kwt/net/forwarder"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 )

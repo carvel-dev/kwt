@@ -1,7 +1,7 @@
 package net
 
 import (
-	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/dstconn"
 )
 
 type SSHEntryPoint struct {

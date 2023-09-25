@@ -3,14 +3,14 @@ package cmd
 import (
 	"io"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	cmdnet "github.com/carvel-dev/kwt/pkg/kwt/cmd/net"
+	cmdreg "github.com/carvel-dev/kwt/pkg/kwt/cmd/registry"
+	cmdres "github.com/carvel-dev/kwt/pkg/kwt/cmd/resource"
+	cmdrestype "github.com/carvel-dev/kwt/pkg/kwt/cmd/resourcetype"
+	cmdwork "github.com/carvel-dev/kwt/pkg/kwt/cmd/workspace"
 	"github.com/cppforlife/cobrautil"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	cmdnet "github.com/k14s/kwt/pkg/kwt/cmd/net"
-	cmdreg "github.com/k14s/kwt/pkg/kwt/cmd/registry"
-	cmdres "github.com/k14s/kwt/pkg/kwt/cmd/resource"
-	cmdrestype "github.com/k14s/kwt/pkg/kwt/cmd/resourcetype"
-	cmdwork "github.com/k14s/kwt/pkg/kwt/cmd/workspace"
 	"github.com/spf13/cobra"
 )
 

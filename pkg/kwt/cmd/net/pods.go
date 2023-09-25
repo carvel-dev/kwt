@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
+	ctlkubedns "github.com/carvel-dev/kwt/pkg/kwt/kubedns"
 	"github.com/cppforlife/go-cli-ui/ui"
 	uitable "github.com/cppforlife/go-cli-ui/ui/table"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
-	ctlkubedns "github.com/k14s/kwt/pkg/kwt/kubedns"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

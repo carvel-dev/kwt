@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	cmdcore "github.com/carvel-dev/kwt/pkg/kwt/cmd/core"
 	"github.com/cppforlife/go-cli-ui/ui"
-	cmdcore "github.com/k14s/kwt/pkg/kwt/cmd/core"
 	"github.com/spf13/cobra"
 )
 

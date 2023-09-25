@@ -6,8 +6,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/k14s/kwt/pkg/kwt/net/dstconn"
-	"github.com/k14s/kwt/pkg/kwt/net/forwarder"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/dstconn"
+	"github.com/carvel-dev/kwt/pkg/kwt/net/forwarder"
 )
 
 type TCPProxy struct {
