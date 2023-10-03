@@ -11,7 +11,7 @@ require (
 	golang.org/x/crypto v0.13.0
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.0.0-20180628040859-072894a440bd
-	k8s.io/apimachinery v0.0.0-20180621070125-103fd098999d
+	k8s.io/apimachinery v0.15.7
 	k8s.io/client-go v0.0.0-20180628043050-7d04d0e2a0a1
 )
 
@@ -40,7 +40,7 @@ require (
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.3 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.27.2 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
@@ -56,4 +56,6 @@ require (
 	google.golang.org/appengine v1.1.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
+	k8s.io/klog v0.3.1 // indirect
+	sigs.k8s.io/yaml v1.1.0 // indirect
 )
