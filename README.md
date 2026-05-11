@@ -1,5 +1,6 @@
 ![logo](docs/CarvelLogo.png)
-
+> ⚠️ **Deprecated**: This tool is no longer actively maintained by the Carvel team. 
+> For actively maintained Carvel tools, see [carvel.dev](https://carvel.dev).
 # kwt
 
 - Slack: [#carvel in Kubernetes slack](https://slack.kubernetes.io)
